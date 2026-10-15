@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <!-- @head -->
+  <title>Флот: 20 проектов судов — характеристики | АО «Омтранснефтепродукт»</title>
+  <meta name="description" content="Буксиры-толкачи, нефтеналивные и сухогрузные баржи, самоходные суда и плавкран. Грузоподъёмность, размеры, осадка и класс Речного регистра каждого проекта." />
+</head>
+<body data-page="fleet" data-nav="flot">
+  <!-- @header -->
+  <main id="main">
+    <section class="page-hero">
+      <div class="wrap">
+        <h1 class="display page-title" data-split>Флот компании</h1>
+        <p class="page-lead">20&nbsp;проектов судов: толкачи и&nbsp;буксиры, самоходные и&nbsp;несамоходные наливные суда, сухогрузы и&nbsp;плавкран. Часть флота имеет ледовый класс и&nbsp;классы «О» и&nbsp;«М» для работы в&nbsp;губах.</p>
+      </div>
+    </section>
+
+    <section class="types section-tight">
+      <div class="wrap">
+        <ul class="type-grid" data-types></ul>
+      </div>
+    </section>
+
+    <section class="section" id="capacity">
+      <div class="wrap">
+        <figure class="cap-chart">
+          <figcaption>
+            <h2 class="h3">Грузоподъёмность нефтеналивных барж, тонн</h2>
+            <p>Каждая полоса — проект баржи. Составы собирают из&nbsp;нескольких барж под нужный объём.</p>
+          </figcaption>
+          <ol class="bars" data-bars></ol>
+        </figure>
+
+        <div class="fleet-table-wrap" id="table">
+          <div class="fleet-tools">
+            <h2 class="h3">Технические характеристики</h2>
+            <div class="chips" role="group" aria-label="Тип судов" data-chips></div>
+          </div>
+          <div class="table-scroll" tabindex="0" role="region" aria-label="Таблица характеристик флота">
+            <table class="fleet-table">
+              <thead>
+                <tr>
+                  <th scope="col">Проект</th>
+                  <th scope="col">Тип судна</th>
+                  <th scope="col" class="num">Грузоподъёмность, т<span>или мощность, л. с.</span></th>
+                  <th scope="col" class="num">Длина × ширина, м</th>
+                  <th scope="col" class="num">Осадка в&nbsp;грузу, м</th>
+                  <th scope="col">Класс Речного регистра</th>
+                </tr>
+              </thead>
+              <tbody data-fleet></tbody>
+            </table>
+          </div>
+          <p class="fine">Нажмите на&nbsp;проект, чтобы открыть чертёж и&nbsp;все характеристики судна.</p>
+        </div>
+
+        <figure class="scale">
+          <figcaption><h2 class="h3">Длина судов в&nbsp;одном масштабе</h2><p>От&nbsp;21,5&nbsp;м у&nbsp;толкача Р&nbsp;96 до&nbsp;86&nbsp;м у&nbsp;баржи М&nbsp;16802.</p></figcaption>
+          <div class="scale-rows" data-scale-rows></div>
+        </figure>
+      </div>
+    </section>
+  </main>
+  <!-- @footer -->
+  <script type="module" src="/src/main.js"></script>
+</body>
+</html>

@@ -1,0 +1,248 @@
+/* Многостраничная версия: внутренние страницы, переходы, курсор, лента флота, 3D-география, чертежи судов. */
+.section-tight { padding: clamp(40px, 6vw, 72px) 0; }
+.section-alt { background: #eef0f2; }
+.more { display: inline-block; margin-top: 28px; font-weight: 600; }
+
+/* Первый экран внутренних страниц */
+.page-hero { padding: clamp(140px, 18vw, 220px) 0 clamp(48px, 7vw, 96px); }
+.page-title { font-size: clamp(3.2rem, 9vw, 8.5rem); max-width: 16ch; line-height: .9; }
+.page-lead { margin: 32px 0 0; max-width: 52ch; font-size: clamp(1.05rem, 1.5vw, 1.3rem); color: #3d4c63; }
+.section-dark .page-lead { color: var(--on-dark); }
+.crumbs { display: flex; gap: 10px; margin-bottom: 24px; font-size: .9375rem; color: var(--steel); }
+.crumbs a { text-decoration: none; }
+.crumbs a:hover { color: var(--buoy); }
+.anchors { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 40px; }
+.anchors a { padding: 10px 18px; border: 1.5px solid var(--line); border-radius: 999px; text-decoration: none; font-size: .9375rem; background: #fff; transition: border-color .2s, background .2s, color .2s; }
+.anchors a:hover { border-color: var(--ink); background: var(--ink); color: #fff; }
+
+/* Буквы */
+.cw { display: inline-block; overflow: hidden; vertical-align: top; padding-bottom: .08em; margin-bottom: -.08em; }
+.ch { display: inline-block; will-change: transform; }
+
+/* Шторка между страницами */
+.curtain { position: fixed; inset: 0; z-index: 90; background: var(--water); display: grid; place-items: center; pointer-events: none; transform: translateY(100%); }
+.js .curtain { transform: none; }
+.curtain.is-off { visibility: hidden; }
+.curtain-logo { width: min(220px, 40vw); }
+.curtain-logo .logo .l-disc { fill: rgba(255,255,255,.92); }
+
+/* Курсор */
+.cursor { position: fixed; left: 0; top: 0; z-index: 95; width: 12px; height: 12px; margin: -6px 0 0 -6px; border-radius: 50%; background: var(--buoy); pointer-events: none; opacity: 0; display: grid; place-items: center;
+  transition: width .3s var(--ease), height .3s var(--ease), margin .3s var(--ease), opacity .3s, background .3s, box-shadow .3s; }
+.cursor.is-on { opacity: 1; }
+.cursor.is-link { width: 44px; height: 44px; margin: -22px 0 0 -22px; background: rgba(200, 55, 45, .16); box-shadow: inset 0 0 0 1.5px var(--buoy); }
+.cursor.is-text { width: 3px; height: 26px; margin: -13px 0 0 -1.5px; border-radius: 2px; }
+.cursor.has-label { width: 88px; height: 88px; margin: -44px 0 0 -44px; background: var(--buoy); box-shadow: none; }
+.cursor-label { color: #fff; font-size: .8125rem; font-weight: 600; opacity: 0; transition: opacity .2s; }
+.cursor.has-label .cursor-label { opacity: 1; }
+@media (hover: hover) and (pointer: fine) { .js body, .js a, .js button, .js summary, .js label { cursor: none; } .js input, .js textarea { cursor: text; } }
+
+.hero-stage { will-change: clip-path; }
+.svc-link { text-decoration: none; background: linear-gradient(currentColor, currentColor) 0 100% / 0 2px no-repeat; transition: background-size .4s var(--ease); }
+.svc-link:hover { background-size: 100% 2px; }
+
+/* Лента флота на главной */
+.fleet-strip { background: var(--paper); }
+.strip-pin { min-height: 100vh; min-height: 100svh; display: flex; flex-direction: column; justify-content: center; overflow: hidden; padding: 110px 0 48px; }
+.strip-head { display: grid; gap: 24px; margin-bottom: clamp(32px, 5vh, 64px); }
+@media (min-width: 900px) { .strip-head { grid-template-columns: 1fr minmax(0, 400px); align-items: end; } }
+.strip-head .h2 { font-size: clamp(2.4rem, 4.6vw, 4.6rem); max-width: 18ch; }
+.strip-side { display: grid; gap: 20px; justify-items: start; }
+.strip-track { display: flex; align-items: flex-end; gap: clamp(28px, 3vw, 56px); padding: 0 var(--gutter) 0 calc(var(--gutter) + var(--rail)); will-change: transform; }
+.strip-item { flex: none; width: calc(var(--len) * clamp(4px, .44vw, 7px)); text-decoration: none; display: grid; gap: 6px; }
+.strip-shape svg { width: 100%; height: auto; transition: transform .5s var(--ease); }
+.strip-item:hover .strip-shape svg { transform: translateY(-6px); }
+.strip-name { font: 600 1.35rem/1 var(--f-display); margin-top: 8px; white-space: nowrap; }
+.strip-meta { font-size: .8125rem; color: var(--steel); white-space: nowrap; }
+.strip-ruler { margin-top: 32px; }
+.strip-ruler::before { content: ''; display: block; height: 2px; background: var(--line); }
+.strip-ruler span { display: block; height: 2px; margin-top: -2px; background: var(--buoy); transform-origin: left; transform: scaleX(0); }
+@media (max-width: 899px) {
+  .strip-pin { min-height: 0; padding: clamp(80px, 12vw, 140px) 0; }
+  .strip-track { overflow-x: auto; scroll-snap-type: x mandatory; padding-bottom: 12px; }
+  .strip-item { scroll-snap-align: start; width: calc(var(--len) * 3.4px); min-width: 120px; }
+  .strip-ruler { display: none; }
+}
+
+/* Силуэты судов (лента, линейка, карточки) */
+.vessel .bp-hull { fill: var(--brand); }
+.vessel .bp-part { fill: #4d5d78; }
+.vessel .bp-line { fill: none; stroke: #4d5d78; stroke-width: 2.5; stroke-linecap: round; }
+.oil .vessel .bp-hull { fill: var(--buoy); }
+.dry .vessel .bp-hull { fill: #6f7c90; }
+
+/* Карточки типов */
+.type-grid { list-style: none; margin: 0; padding: 0; display: grid; gap: 12px; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); }
+.type-card { position: relative; display: grid; grid-template-rows: auto auto 1fr; gap: 6px; height: 100%; min-height: 220px; padding: 22px 22px 18px; border-radius: 18px; background: #fff; text-decoration: none; overflow: hidden; transition: transform .4s var(--ease), box-shadow .4s var(--ease); }
+.type-card:hover { transform: translateY(-4px); box-shadow: 0 18px 40px -24px rgba(27, 43, 71, .45); }
+.type-count { font: 600 3.4rem/.9 var(--f-display); color: var(--brand); }
+.type-card.oil .type-count { color: var(--buoy); }
+.type-name { font-weight: 600; }
+.type-shape { align-self: end; display: block; margin-top: 18px; }
+.type-shape svg { width: 100%; height: auto; max-height: 90px; transition: transform .6s var(--ease); }
+.type-card:hover .type-shape svg { transform: translateX(10px); }
+.bar-name { text-decoration: none; }
+.bar-name:hover { color: var(--buoy); }
+.fleet-table tbody tr { cursor: pointer; }
+
+/* Страница судна */
+.page-hero-vessel { padding-bottom: clamp(32px, 5vw, 56px); }
+.blueprint-wrap { padding: clamp(40px, 6vw, 72px) 0; }
+.blueprint-frame { position: relative; padding: clamp(24px, 4vw, 56px); border-radius: 24px; border: 1px solid rgba(159, 176, 198, .25);
+  background-color: #17294a; background-image: linear-gradient(rgba(159,176,198,.08) 1px, transparent 1px), linear-gradient(90deg, rgba(159,176,198,.08) 1px, transparent 1px); background-size: 28px 28px; }
+.blueprint { width: 100%; height: auto; max-height: 56vh; overflow: visible; }
+.blueprint .bp-hull, .blueprint .bp-part { fill: rgba(232, 237, 243, .08); stroke: #e8edf3; stroke-width: 2.2; stroke-linejoin: round; }
+.blueprint .bp-line { fill: none; stroke: #e8edf3; stroke-width: 2.2; stroke-linecap: round; }
+.blueprint .bp-dim { fill: none; stroke: var(--buoy); stroke-width: 1.6; }
+.blueprint .bp-label { fill: #fff; font: 600 22px var(--f-display); letter-spacing: .02em; }
+.blueprint .bp-water { stroke: #5d7aa3; stroke-width: 2; stroke-dasharray: 14 10; fill: none; }
+.blueprint-note { margin: 16px 0 0; font-size: .875rem; color: var(--on-dark-soft); }
+.kpis { margin: 0 0 clamp(56px, 8vw, 96px); display: grid; grid-template-columns: repeat(2, 1fr); gap: 32px 24px; border-top: 1.5px solid var(--ink); padding-top: 28px; }
+@media (min-width: 900px) { .kpis { grid-template-columns: repeat(4, 1fr); } }
+.kpis dt { font-size: .875rem; color: var(--steel); }
+.kpis dd { margin: 8px 0 0; font-size: 1.125rem; color: #3d4c63; }
+.kpi-v { font: 600 clamp(2.6rem, 5vw, 4.4rem)/.9 var(--f-display); color: var(--brand); }
+.kpi-cls { font-size: clamp(1.6rem, 2.6vw, 2.2rem); }
+.spec-grid { display: grid; gap: 24px; }
+@media (min-width: 900px) { .spec-grid { grid-template-columns: 280px 1fr; gap: 56px; } }
+.spec-list { margin: 0; border-top: 1px solid var(--line); }
+.spec-list div { display: grid; grid-template-columns: 1fr auto; gap: 16px; padding: 14px 0; border-bottom: 1px solid var(--line); }
+.spec-list dt { color: #3d4c63; }
+.spec-list dd { margin: 0; font-weight: 600; text-align: right; font-variant-numeric: tabular-nums; }
+.vnav { padding-top: 0; }
+.vnav-grid { display: grid; gap: 16px; }
+@media (min-width: 800px) { .vnav-grid { grid-template-columns: 1fr 1fr; } }
+.vnav-card { display: grid; gap: 4px; padding: 26px; border-radius: 20px; background: #fff; text-decoration: none; transition: transform .4s var(--ease), box-shadow .4s var(--ease); }
+.vnav-card:hover { transform: translateY(-4px); box-shadow: 0 18px 40px -24px rgba(27, 43, 71, .45); }
+.vnav-card:last-child { text-align: right; }
+.vnav-dir { font-size: .875rem; color: var(--steel); }
+.vnav-name { font: 600 2.2rem/1 var(--f-display); }
+.vnav-type { color: #3d4c63; font-size: .9375rem; }
+.vnav-card .vessel { margin-top: 18px; width: 100%; height: auto; max-height: 80px; }
+
+/* Перевозки */
+.service-grid { display: grid; gap: 48px; align-items: center; }
+@media (min-width: 960px) { .service-grid { grid-template-columns: 1fr 1fr; gap: 80px; } .service-grid-flip .art { order: -1; } }
+.service-copy .section-lead { margin-top: 28px; }
+.ticks { list-style: none; margin: 32px 0 0; padding: 0; display: grid; gap: 14px; }
+.ticks li { position: relative; padding-left: 30px; color: #3d4c63; max-width: 52ch; }
+.ticks li::before { content: ''; position: absolute; left: 0; top: .55em; width: 14px; height: 8px; border-left: 2px solid var(--buoy); border-bottom: 2px solid var(--buoy); transform: rotate(-45deg); }
+.mini-specs { margin: 32px 0 0; display: grid; grid-template-columns: 1fr 1fr; gap: 0 24px; border-top: 1px solid var(--line); }
+.mini-specs div { padding: 14px 0; border-bottom: 1px solid var(--line); }
+.mini-specs dt a { font: 600 1.35rem/1 var(--f-display); text-decoration: none; }
+.mini-specs dt a:hover { color: var(--buoy); }
+.mini-specs dd { margin: 4px 0 0; color: var(--steel); font-size: .9375rem; }
+.art { margin: 0; }
+.art svg { width: 100%; height: auto; display: block; }
+.art-bg { fill: #1b2b47; }
+.art-water { fill: #2c4366; }
+.art-ground { fill: #22365a; }
+.art-hull { fill: #c8372d; }
+.art-tanks rect { fill: #3a4a63; }
+.art-fill rect { fill: #e8edf3; opacity: .9; }
+.art-line { fill: none; stroke: #9fb0c6; stroke-width: 4; stroke-linecap: round; }
+.art-boom { stroke: #e8edf3; stroke-width: 6; }
+.art-hook { fill: #9fb0c6; }
+.art-cargo { fill: #9fb0c6; }
+.art-part { fill: #eef1f5; stroke: none; }
+.art-drop { fill: #c8372d; }
+.art-rail { fill: none; stroke: #6c7f9c; stroke-width: 3; }
+.art-tankcar { fill: #9fb0c6; }
+.art-wheel { fill: #1b2b47; stroke: #9fb0c6; stroke-width: 3; }
+.art-pipe { fill: none; stroke: #e8edf3; stroke-width: 7; stroke-linecap: round; }
+.art-flow { fill: none; stroke: #c8372d; stroke-width: 3; stroke-linecap: round; stroke-dasharray: 6 14; opacity: 0; }
+.order-steps { list-style: none; margin: 0; padding: 0; display: grid; gap: 40px; }
+@media (min-width: 900px) { .order-steps { grid-template-columns: repeat(3, 1fr); } }
+.order-steps li { border-top: 1.5px solid var(--ink); padding-top: 20px; }
+.order-steps p { margin: 0; color: #3d4c63; }
+.step-big { display: block; font: 600 clamp(4rem, 7vw, 6rem)/.9 var(--f-display); color: var(--buoy); margin-bottom: 16px; }
+
+/* География 3D */
+.geo3d { position: relative; background: #0f1b30; }
+.geo3d-pin { position: relative; height: 100vh; height: 100svh; overflow: hidden; }
+.geo3d-canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+.geo3d-labels { position: absolute; inset: 0; pointer-events: none; }
+.geo3d-label { position: absolute; left: 0; top: 0; padding: 5px 10px; border-radius: 999px; background: rgba(15, 27, 48, .78); color: #fff; font-size: .8125rem; font-weight: 500; white-space: nowrap; transition: opacity .3s; backdrop-filter: blur(4px); }
+.geo3d-label.is-home { background: var(--buoy); }
+.geo3d-label.is-sea { background: none; color: var(--on-dark-soft); font: 500 1.1rem var(--f-display); letter-spacing: .06em; }
+.geo3d-copy { position: absolute; left: 0; right: 0; top: clamp(110px, 16vh, 160px); pointer-events: none; }
+.geo3d-copy .page-title { font-size: clamp(2.8rem, 7vw, 6.4rem); text-shadow: 0 2px 30px rgba(10, 20, 36, .5); }
+.geo3d-legs { list-style: none; margin: 28px 0 0; padding: 0; display: grid; gap: 10px; max-width: 420px; }
+.geo3d-legs li { color: var(--on-dark-soft); opacity: .4; transition: opacity .4s, transform .4s var(--ease); font-size: 1rem; }
+.geo3d-legs li.is-on { opacity: 1; transform: translateX(10px); color: #fff; }
+.geo3d-legs b { color: #fff; }
+.geo3d-hint { position: absolute; left: 50%; bottom: 28px; transform: translateX(-50%); color: var(--on-dark-soft); font-size: .8125rem; white-space: nowrap; }
+.geo3d.is-flat .geo3d-pin { height: auto; padding: 140px 0 60px; }
+.geo3d.is-flat .geo3d-copy { position: static; margin-bottom: 32px; }
+.geo3d.is-flat .geo3d-canvas, .geo3d.is-flat .geo3d-hint { display: none; }
+@media (max-width: 700px) { .geo3d-legs { display: none; } }
+.area-list { list-style: none; margin: 0; padding: 0; border-top: 1.5px solid var(--ink); }
+.area-list a { display: grid; gap: 4px; padding: 22px 48px 22px 0; border-bottom: 1px solid var(--line); text-decoration: none; position: relative; }
+@media (min-width: 800px) { .area-list a { grid-template-columns: 1fr 1fr; align-items: baseline; } }
+.area-name { font: 600 clamp(1.5rem, 2.6vw, 2.2rem)/1.05 var(--f-display); transition: color .25s, transform .4s var(--ease); }
+.area-list a:hover .area-name { color: var(--buoy); transform: translateX(8px); }
+.area-note { color: var(--steel); }
+.area-list a::after { content: ''; position: absolute; right: 8px; top: 50%; width: 12px; height: 12px; border-top: 2px solid var(--ink); border-right: 2px solid var(--ink); transform: translateY(-50%) rotate(45deg); }
+
+/* Компания */
+.company-hero { padding-bottom: 24px; }
+.company-hero .page-title { font-size: clamp(2.8rem, 6.4vw, 6rem); }
+.about-grid, .req-grid, .roles-grid { display: grid; gap: 32px; }
+@media (min-width: 960px) { .about-grid, .req-grid, .roles-grid { grid-template-columns: 1fr 1.1fr; gap: 80px; } }
+.about-copy .section-lead + .section-lead { margin-top: 20px; }
+.req-list { margin: 0 0 24px; border-top: 1.5px solid var(--ink); }
+.req-list div { display: grid; gap: 2px; padding: 12px 0; border-bottom: 1px solid var(--line); }
+@media (min-width: 640px) { .req-list div { grid-template-columns: 220px 1fr; gap: 16px; } }
+.req-list dt { color: var(--steel); font-size: .875rem; }
+.req-list dd { margin: 0; font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
+.req-list.req-compact div { grid-template-columns: 1fr; gap: 2px; }
+
+/* Работа */
+.careers-hero { position: relative; overflow: hidden; isolation: isolate; min-height: 100vh; min-height: 100svh; display: flex; align-items: flex-end; padding: 160px 0 clamp(56px, 9vw, 110px); }
+.careers-media { position: absolute; inset: 0; z-index: -1; overflow: hidden; }
+.careers-media img { width: 100%; height: 120%; object-fit: cover; object-position: 70% 50%; }
+.careers-media::after { content: ''; position: absolute; inset: 0; background: linear-gradient(0deg, rgba(20,34,59,.92) 0%, rgba(20,34,59,.5) 45%, rgba(20,34,59,.25) 100%); }
+.careers-inner { width: 100%; }
+.careers-cta { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 36px; }
+.roles-list { list-style: none; margin: 0; padding: 0; border-top: 1.5px solid var(--ink); }
+.roles-list li { display: flex; gap: 20px; align-items: baseline; padding: 20px 0; border-bottom: 1px solid var(--line); font: 600 clamp(1.3rem, 2.2vw, 1.8rem)/1.15 var(--f-display); }
+.role-n { font: 500 .875rem var(--f-text); color: var(--buoy); }
+
+/* Контакты */
+.addr-big { font: 600 clamp(1.8rem, 3.4vw, 3rem)/1.05 var(--f-display); color: var(--ink); }
+.desk-links { margin-top: 20px; }
+.phone-grid { list-style: none; margin: 0; padding: 0; display: grid; gap: 12px; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); }
+.phone-grid li { display: grid; gap: 4px; align-content: start; padding: 22px; border-radius: 18px; background: #fff; }
+.phone-grid .ph-title { font-size: .875rem; color: var(--steel); }
+.phone-grid a { font: 600 1.45rem/1.15 var(--f-display); text-decoration: none; font-variant-numeric: tabular-nums; }
+.phone-grid a:hover { color: var(--buoy); }
+.phone-grid .ph-note { font-size: .875rem; color: var(--steel); }
+
+/* Блок «Обсудим перевозку» */
+.cta-band { position: relative; overflow: hidden; padding: clamp(96px, 13vw, 180px) 0; isolation: isolate; }
+.cta-water { position: absolute; inset: 0; width: 100%; height: 100%; z-index: -1; }
+.cta-inner { display: grid; gap: 40px; align-items: end; }
+@media (min-width: 960px) { .cta-inner { grid-template-columns: 1.2fr .8fr; } }
+.cta-title { font-size: clamp(3rem, 8vw, 7.4rem); max-width: 11ch; }
+.cta-side p { margin: 0; color: var(--on-dark); max-width: 36ch; }
+.cta-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 20px 28px; margin: 28px 0 10px; }
+.cta-phone { font: 600 1.8rem/1 var(--f-display); text-decoration: none; color: #fff; }
+.cta-phone:hover { color: var(--buoy); }
+.cta-side .cta-note { color: var(--on-dark-soft); font-size: .875rem; }
+
+/* Подвал */
+.foot { border-top: 1px solid rgba(255,255,255,.08); }
+.foot-grid { display: grid; gap: 32px; margin-bottom: clamp(48px, 7vw, 88px); font-size: .9375rem; color: var(--on-dark-soft); }
+@media (min-width: 900px) { .foot-grid { grid-template-columns: 1.2fr 1fr .8fr; } }
+.foot-brand { display: grid; gap: 16px; justify-items: start; }
+.foot-brand p { margin: 0; }
+.foot-nav, .foot-contacts { display: grid; gap: 8px; align-content: start; }
+.foot-nav a, .foot-contacts a { text-decoration: none; color: var(--on-dark); }
+.foot-nav a:hover, .foot-contacts a:hover { color: var(--buoy); }
+.foot-contacts a { font: 600 1.35rem/1.2 var(--f-display); }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { transition-duration: .01ms !important; animation-duration: .01ms !important; }
+  .hero { height: 220vh; }
+  .js .curtain { visibility: hidden; }
+}

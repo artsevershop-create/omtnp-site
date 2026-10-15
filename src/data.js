@@ -1,15 +1,16 @@
-// Данные с официального сайта omtnp.ru (раздел «Флот», «Контакты», «Реквизиты», «Коммерческое предложение»), снято 15.10.2026.
+// Данные с официального сайта omtnp.ru (разделы «Флот», «Контакты», «Реквизиты», «Коммерческое предложение»), сняты 15.10.2026.
 
 export const OFFICIAL = 'https://www.omtnp.ru';
 
+// shape — силуэт на чертеже: barge (баржа), tug (буксир), ship (самоходное судно), crane (плавкран)
 export const TYPES = {
-  pusher: { label: 'Буксир-толкач', group: 'tug' },
-  tug: { label: 'Буксир', group: 'tug' },
-  selfTanker: { label: 'Самоходное нефтеналивное', group: 'oil' },
-  selfDry: { label: 'Самоходное сухогрузное', group: 'dry' },
-  crane: { label: 'Плавкран', group: 'dry' },
-  bargeTanker: { label: 'Несамоходное нефтеналивное', group: 'oil' },
-  bargeDry: { label: 'Несамоходное сухогрузное', group: 'dry' },
+  pusher: { label: 'Буксир-толкач', plural: 'Буксиры-толкачи', group: 'tug', shape: 'tug' },
+  tug: { label: 'Буксир', plural: 'Буксиры', group: 'tug', shape: 'tug' },
+  selfTanker: { label: 'Самоходное нефтеналивное', plural: 'Самоходные нефтеналивные', group: 'oil', shape: 'ship' },
+  selfDry: { label: 'Самоходное сухогрузное', plural: 'Самоходные сухогрузы', group: 'dry', shape: 'ship' },
+  crane: { label: 'Плавкран', plural: 'Плавкраны', group: 'dry', shape: 'crane' },
+  bargeTanker: { label: 'Несамоходное нефтеналивное', plural: 'Нефтеналивные баржи', group: 'oil', shape: 'barge' },
+  bargeDry: { label: 'Несамоходное сухогрузное', plural: 'Сухогрузные баржи', group: 'dry', shape: 'barge' },
 };
 
 export const GROUPS = [
@@ -19,30 +20,45 @@ export const GROUPS = [
   { id: 'tug', label: 'Буксиры' },
 ];
 
-// power — мощность главных двигателей, л. с.; cargo — установленная грузоподъёмность, т.
-// length/width — м; draft — осадка в грузу, м; dock — доковый вес, т.
+// cargo — грузоподъёмность, т (у плавкрана — грузоподъёмность крана); power — главные двигатели, л. с.
+// length/width — м; height — габаритная высота / высота борта, м; draftEmpty/draft — осадка порожнём / в грузу, м;
+// gt — валовая вместимость / водоизмещение; dock — доковый вес, т.
 export const FLEET = [
-  { project: 'М 16802', type: 'bargeTanker', cargo: 3229.6, cls: 'М-СП 3,5 / лёд 30', length: 86, width: 17, draft: '2,95', dock: 740, path: '/флот/несамоходное-нефтеналивное/м-16802' },
-  { project: '432 / ТСК 128-03', type: 'bargeTanker', cargo: 2364.9, cls: 'Р 1,2', length: 80.3, width: 16.4, draft: '2,08', dock: 480, path: '/флот/несамоходное-нефтеналивное/432' },
-  { project: '81371', type: 'bargeTanker', cargo: 1599, cls: 'О 2,0 / лёд 20', length: 71.8, width: 14.3, draft: '1,6–1,8', dock: 469, path: '/флот/несамоходное-нефтеналивное/81371' },
-  { project: '262', type: 'bargeTanker', cargo: 1237, cls: 'Р 1,2', length: 68.33, width: 14.36, draft: '1,45', dock: 225, path: '/флот/несамоходное-нефтеналивное/262' },
-  { project: '1390 / фин. 1000', type: 'bargeTanker', cargo: 1176, cls: 'М 3,0', length: 64.8, width: 12.35, draft: '2,4', dock: 340, path: '/флот/несамоходное-нефтеналивное/1390' },
-  { project: 'В. 016', type: 'bargeTanker', cargo: 827, cargoNote: '674 + 153', cls: 'О 2,0', length: 64.8, width: 12.32, draft: '2,1', dock: 340, path: '/флот/несамоходное-нефтеналивное/в.016' },
-  { project: '81216 Р', type: 'bargeTanker', cargo: 557, cls: 'Р 1,2', length: 45.68, width: 10.36, draft: '1,57', dock: 160, path: '/флот/несамоходное-нефтеналивное/81216-р' },
-  { project: '81463', type: 'bargeTanker', cargo: 296, cls: 'Р 1,2', length: 45, width: 8.92, draft: '1,1', dock: 96, path: '/флот/несамоходное-нефтеналивное/81463' },
-  { project: 'К-1908-3', type: 'bargeTanker', cargo: 270, cls: 'Р 1,2', length: 35.8, width: 7.7, draft: '1,3', dock: 63.7, path: '/флот/несамоходное-нефтеналивное/к-1908-3' },
-  { project: '375 / 12.05 / 375М / 133.05', type: 'selfTanker', power: '2 × 580', cls: 'М 2,0 / лёд 30', length: 85.13, width: 15.26, draft: '2,07–2,10', dock: 713, path: '/флот/самоходное-нефтеналивное/375' },
-  { project: '2.559 / 5.89.05', type: 'selfDry', power: '2 × 580', cls: 'М 2,0', length: 85.13, width: 15.26, draft: '2,1–2,4', dock: 666, path: '/флот/самоходное-сухогрузное/2.559' },
-  { project: '942 А', type: 'bargeDry', cargo: 1000, cls: 'Р 1,2', length: 66.2, width: 14.2, draft: '1,57', dock: 248, path: '/флот/несамоходное-сухогрузное/942-а' },
-  { project: '943', type: 'bargeDry', cargo: 750, cls: 'Р 1,2', length: 57.28, width: 12.06, draft: '1,78', dock: 177.2, path: '/флот/несамоходное-сухогрузное/943' },
-  { project: 'Д-9012', type: 'crane', power: '1 × 660', cls: 'О 2,0', length: 32.22, width: 15.82, draft: '1,4', dock: 568, path: '/флот/плавкран/д-9012' },
-  { project: '758 АМ', type: 'pusher', power: '2 × 400', cls: 'О 2,0 / лёд 20 / А', length: 40.8, width: 8.6, draft: '2,19', dock: 343, path: '/флот/буксир-толкач/758-ам' },
-  { project: '1741 А', type: 'pusher', power: '2 × 300', cls: 'Р 1,2 / лёд 10 / А', length: 33.9, width: 8.5, draft: '1,5', dock: 190, path: '/флот/буксир-толкач/1741-а' },
-  { project: 'Р162А', type: 'pusher', power: '2 × 225', cls: 'Р 1,2 А', length: 26.8, width: 9.2, draft: '0,8', dock: 140, path: '/флот/буксир-толкач/р162а' },
-  { project: '911', type: 'pusher', power: '2 × 150', cls: 'Р 1,2', length: 26.3, width: 6.9, draft: '0,91', dock: 82.3, path: '/флот/буксир-толкач/911' },
-  { project: 'Р 96', type: 'pusher', power: '1 × 150', cls: 'Р 1,2 А', length: 21.5, width: 5.3, draft: '0,71', dock: 42.8, path: '/флот/буксир-толкач/р-96' },
-  { project: 'У1А4', type: 'tug', power: '2 × 220', cls: 'М 3,0', length: 36.8, width: 8.3, draft: '1,54', dock: 255, path: '/флот/буксир/у1а4' },
+  { slug: 'm-16802', project: 'М 16802', type: 'bargeTanker', cargo: 3229.6, cls: 'М-СП 3,5 / лёд 30', gt: '1795', length: 86, width: 17, height: '13,8 / 3,3', draftEmpty: '0,71', draft: '2,95', dock: 740, path: '/флот/несамоходное-нефтеналивное/м-16802' },
+  { slug: '432', project: '432 / ТСК 128-03', type: 'bargeTanker', cargo: 2364.9, cls: 'Р 1,2', gt: '1500 / 2480', length: 80.3, width: 16.4, height: '7,5 / 2,5', draftEmpty: '0,4', draft: '2,08', dock: 480, path: '/флот/несамоходное-нефтеналивное/432' },
+  { slug: '81371', project: '81371', type: 'bargeTanker', cargo: 1599, cls: 'О 2,0 / лёд 20', gt: '1298 / 1624', length: 71.8, width: 14.3, height: '9,8 / 2,0', draftEmpty: '0,57', draft: '1,6–1,8', dock: 469, path: '/флот/несамоходное-нефтеналивное/81371' },
+  { slug: '262', project: '262', type: 'bargeTanker', cargo: 1237, cls: 'Р 1,2', gt: '604 / 1240', length: 68.33, width: 14.36, height: '8,0 / 2,0', draftEmpty: '0,24', draft: '1,45', dock: 225, path: '/флот/несамоходное-нефтеналивное/262' },
+  { slug: '1390', project: '1390 / фин. 1000', type: 'bargeTanker', cargo: 1176, cls: 'М 3,0', gt: '928,7', length: 64.8, width: 12.35, height: '6,5 / 3,62', draftEmpty: '0,73', draft: '2,4', dock: 340, path: '/флот/несамоходное-нефтеналивное/1390' },
+  { slug: 'v-016', project: 'В. 016', type: 'bargeTanker', cargo: 827, cargoNote: '674 + 153', cls: 'О 2,0', gt: '955,83', length: 64.8, width: 12.32, height: '7,5 / 3,63', draftEmpty: '1,2', draft: '2,1', dock: 340, path: '/флот/несамоходное-нефтеналивное/в.016' },
+  { slug: '81216-r', project: '81216 Р', type: 'bargeTanker', cargo: 557, cls: 'Р 1,2', gt: '456,54', length: 45.68, width: 10.36, height: '8,10 / 1,79', draftEmpty: '0,45', draft: '1,57', dock: 160, path: '/флот/несамоходное-нефтеналивное/81216-р' },
+  { slug: '81463', project: '81463', type: 'bargeTanker', cargo: 296, cls: 'Р 1,2', gt: '266 / 361', length: 45, width: 8.92, height: '7,2 / 1,3', draftEmpty: '0,32', draft: '1,1', dock: 96, path: '/флот/несамоходное-нефтеналивное/81463' },
+  { slug: 'k-1908-3', project: 'К-1908-3', type: 'bargeTanker', cargo: 270, cls: 'Р 1,2', gt: '215 / 191', length: 35.8, width: 7.7, height: '6,2 / 1,3', draftEmpty: '0,3', draft: '1,3', dock: 63.7, path: '/флот/несамоходное-нефтеналивное/к-1908-3' },
+  { slug: '375', project: '375 / 12.05 / 375М / 133.05', type: 'selfTanker', cargo: 1270, power: '2 × 580', cls: 'М 2,0 / лёд 30', gt: '1555 / 2018', length: 85.13, width: 15.26, height: '9,4 / 2,8', draftEmpty: '1,34', draft: '2,07–2,10', dock: 713, path: '/флот/самоходное-нефтеналивное/375' },
+  { slug: '2-559', project: '2.559 / 5.89.05', type: 'selfDry', cargo: 1420, power: '2 × 580', cls: 'М 2,0', gt: '1307,42 / 2030', length: 85.13, width: 15.26, height: '9,8 / 2,8', draftEmpty: '1,03', draft: '2,1–2,4', dock: 666, path: '/флот/самоходное-сухогрузное/2.559' },
+  { slug: '942-a', project: '942 А', type: 'bargeDry', cargo: 1000, cls: 'Р 1,2', gt: '604 / 1248', length: 66.2, width: 14.2, height: '5,6 / 2,0', draftEmpty: '0,36', draft: '1,57', dock: 248, path: '/флот/несамоходное-сухогрузное/942-а' },
+  { slug: '943', project: '943', type: 'bargeDry', cargo: 750, cls: 'Р 1,2', gt: '417 / 937', length: 57.28, width: 12.06, height: '2,8 / 2,0', draftEmpty: '0,37', draft: '1,78', dock: 177.2, path: '/флот/несамоходное-сухогрузное/943' },
+  { slug: 'd-9012', project: 'Д-9012', type: 'crane', cargo: 16, power: '1 × 660', cls: 'О 2,0', gt: '522,97 / 787,6', length: 32.22, width: 15.82, height: '8,8 / 3,1', draftEmpty: '0,9', draft: '1,4', dock: 568, path: '/флот/плавкран/д-9012' },
+  { slug: '758-am', project: '758 АМ', type: 'pusher', power: '2 × 400', cls: 'О 2,0 / лёд 20 / А', gt: '427,56', length: 40.8, width: 8.6, height: '13,9 / 3,2', draftEmpty: '2,06', draft: '2,19', dock: 343, path: '/флот/буксир-толкач/758-ам' },
+  { slug: '1741-a', project: '1741 А', type: 'pusher', power: '2 × 300', cls: 'Р 1,2 / лёд 10 / А', gt: '282,69 / 256', length: 33.9, width: 8.5, height: '16,51 / 2,7', draftEmpty: '1,25', draft: '1,5', dock: 190, path: '/флот/буксир-толкач/1741-а' },
+  { slug: 'r162a', project: 'Р162А', type: 'pusher', power: '2 × 225', cls: 'Р 1,2 А', gt: '198,9', length: 26.8, width: 9.2, height: '7,7 / 1,1', draftEmpty: '0,78', draft: '0,8', dock: 140, path: '/флот/буксир-толкач/р162а' },
+  { slug: '911', project: '911', type: 'pusher', power: '2 × 150', cls: 'Р 1,2', gt: '116 / 105,78', length: 26.3, width: 6.9, height: '9,2 / 1,8', draftEmpty: '0,85', draft: '0,91', dock: 82.3, path: '/флот/буксир-толкач/911',
+    desc: 'Буксиры-толкачи типа «РТ» — небольшие суда для буксировки плотов, сухогрузных составов и наливных барж. Одна из самых массовых серий речных толкачей.' },
+  { slug: 'r-96', project: 'Р 96', type: 'pusher', power: '1 × 150', cls: 'Р 1,2 А', gt: '52,65 / 50,83', length: 21.5, width: 5.3, height: '6,5 / 1,4', draftEmpty: '0,69', draft: '0,71', dock: 42.8, path: '/флот/буксир-толкач/р-96',
+    desc: 'Речной одновинтовой буксир-толкач с водомётным движителем, удлинённым полубаком, капом над машинным отделением, надстройкой и рубкой. Буксирует и толкает несамоходные сухогрузные и нефтеналивные суда II категории с нефтепродуктами III и IV классов и буксирует суда I категории с нефтепродуктами I и II классов.' },
+  { slug: 'u1a4', project: 'У1А4', type: 'tug', power: '2 × 220', cls: 'М 3,0', gt: '255,35 / 289', length: 36.8, width: 8.3, height: '13,5 / 2,7', draftEmpty: '1,45', draft: '1,54', dock: 255, path: '/флот/буксир/у1а4',
+    desc: 'Двухвинтовой буксир с жилыми помещениями в корпусе, одноярусной надстройкой на главной палубе и машинным отделением в средней части. Буксирует несамоходные суда, может идти в битом льду.' },
 ];
+
+// Описание по типу — для судов без собственного описания на omtnp.ru
+export const TYPE_DESC = {
+  pusher: 'Толкач водит составы из несамоходных барж — наливных и сухогрузных — по рекам бассейна.',
+  tug: 'Буксир проводит несамоходные суда по маршруту и помогает при швартовке.',
+  selfTanker: 'Самоходное нефтеналивное судно: перевозит светлые нефтепродукты своим ходом, без толкача.',
+  selfDry: 'Самоходное сухогрузное судно: перевозит сухие грузы своим ходом, без толкача.',
+  crane: 'Плавучий кран для погрузки и выгрузки у причалов и на рейде.',
+  bargeTanker: 'Несамоходная нефтеналивная баржа. Ходит в составе с толкачом; несколько барж собирают в состав под нужный объём.',
+  bargeDry: 'Несамоходная сухогрузная баржа для перевозки сухих грузов в составе с толкачом.',
+};
 
 export const CONTACTS = [
   { title: 'Приёмная', phones: ['+7 (3812) 31-44-06'], note: 'Тел./факс +7 (3812) 30-56-76' },
@@ -64,6 +80,7 @@ export const REQUISITES = [
   ['Банк', 'Филиал «Новосибирский» АО «Альфа-Банк»'],
   ['Корр. счёт', '30101810600000000774'],
   ['БИК', '045004774'],
+  ['ЭДО (Контур.Диадок)', '2BM-5528202607-2012052808285030502630000000000'],
 ];
 
 export const ROLES = [

@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <!-- @head -->
+  <title>Контакты и заявка на перевозку | АО «Омтранснефтепродукт»</title>
+  <meta name="description" content="644024, г. Омск, ул. 10 лет Октября, 33. Приёмная +7 (3812) 31-44-06, грузовая и коммерческая работа +7 (3812) 51-03-08, omtnp@omtnp.ru." />
+</head>
+<body data-page="contacts" data-nav="kontakty">
+  <!-- @header -->
+  <main id="main">
+    <section class="page-hero">
+      <div class="wrap">
+        <h1 class="display page-title" data-split>Контакты</h1>
+        <p class="page-lead addr-big">644024, г.&nbsp;Омск, ул.&nbsp;10&nbsp;лет Октября,&nbsp;33</p>
+        <p class="desk-links"><a class="link" href="https://yandex.ru/maps/?text=%D0%9E%D0%BC%D1%81%D0%BA%2C%2010%20%D0%BB%D0%B5%D1%82%20%D0%9E%D0%BA%D1%82%D1%8F%D0%B1%D1%80%D1%8F%2C%2033" target="_blank" rel="noopener">Открыть на&nbsp;Яндекс Картах</a><a class="link" href="mailto:omtnp@omtnp.ru">omtnp@omtnp.ru</a></p>
+      </div>
+    </section>
+
+    <section class="section-tight">
+      <div class="wrap">
+        <ul class="phone-grid" data-contacts></ul>
+      </div>
+    </section>
+
+    <section class="section contacts" id="request">
+      <div class="wrap contacts-grid">
+        <div class="request">
+          <h2 class="display h2" data-split>Заявка на&nbsp;перевозку</h2>
+          <p class="section-lead">Ответим с&nbsp;условиями, сроками и&nbsp;стоимостью. Заявка откроется в&nbsp;вашей почтовой программе — останется нажать «Отправить».</p>
+          <form class="form" data-request novalidate>
+            <fieldset class="seg">
+              <legend>Груз</legend>
+              <label><input type="radio" name="cargo" value="Светлые нефтепродукты" checked /><span>Нефтепродукты</span></label>
+              <label><input type="radio" name="cargo" value="Сухой груз" /><span>Сухой груз</span></label>
+              <label><input type="radio" name="cargo" value="Перевалка с ж/д на воду" /><span>Перевалка с&nbsp;ж/д</span></label>
+            </fieldset>
+            <div class="row2">
+              <label class="field"><span>Откуда</span><input name="from" autocomplete="off" placeholder="Например, Омск" /></label>
+              <label class="field"><span>Куда</span><input name="to" autocomplete="off" placeholder="Пункт выгрузки" /></label>
+            </div>
+            <div class="row2">
+              <label class="field"><span>Объём, тонн</span><input name="volume" inputmode="numeric" /></label>
+              <label class="field"><span>Сроки</span><input name="dates" placeholder="Например, июнь" /></label>
+            </div>
+            <div class="row2">
+              <label class="field"><span>Компания и&nbsp;контактное лицо</span><input name="name" autocomplete="organization" /></label>
+              <label class="field"><span>Телефон или e-mail</span><input name="contact" autocomplete="email" /></label>
+            </div>
+            <label class="field"><span>Комментарий</span><textarea name="note" rows="3"></textarea></label>
+            <p class="form-error" role="alert" data-form-error hidden></p>
+            <button class="btn" type="submit" data-magnetic>Открыть письмо с&nbsp;заявкой</button>
+          </form>
+        </div>
+        <div class="desk">
+          <h2 class="h3">Реквизиты</h2>
+          <dl class="req-list req-compact" data-requisites></dl>
+          <button class="btn btn-ghost btn-sm" type="button" data-copy-req data-magnetic>Скопировать реквизиты</button>
+        </div>
+      </div>
+    </section>
+  </main>
+  <!-- @footer -->
+  <script type="module" src="/src/main.js"></script>
+</body>
+</html>

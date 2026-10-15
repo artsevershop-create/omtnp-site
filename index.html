@@ -1,52 +1,13 @@
 <!doctype html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <!-- @head -->
   <title>АО «Омтранснефтепродукт» — речные перевозки нефтепродуктов и сухих грузов</title>
   <meta name="description" content="Судоходная компания из Омска. С 2008 года перевозим светлые нефтепродукты и сухие грузы по Обь-Иртышскому и Енисейскому бассейнам, Обской и Тазовской губам." />
-  <meta name="theme-color" content="#1b2b47" />
-  <link rel="icon" href="/brand/OMTNP.svg" type="image/svg+xml" />
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Fira+Sans+Extra+Condensed:wght@500;600;700&family=Golos+Text:wght@400;500;600&display=swap" rel="stylesheet" />
   <link rel="preload" as="image" href="/media/tanker-poster.webp" />
 </head>
-<body>
-  <a class="skip" href="#main">Перейти к содержанию</a>
-
-  <header class="top" data-top>
-    <a class="brand" href="#hero" aria-label="АО «Омтранснефтепродукт», в начало">
-      <span class="brand-mark" data-logo-slot="mark"></span>
-      <span class="brand-name">Омтранснефтепродукт</span>
-    </a>
-    <nav class="nav" aria-label="Разделы">
-      <a href="#services">Перевозки</a>
-      <a href="#fleet">Флот</a>
-      <a href="#geography">География</a>
-      <a href="#company">Компания</a>
-      <a href="#careers">Работа</a>
-      <a href="#contacts">Контакты</a>
-    </nav>
-    <a class="top-phone" href="tel:+73812314406">+7 (3812) 31-44-06</a>
-    <a class="btn btn-sm top-cta" href="#request">Отправить заявку</a>
-    <button class="burger" type="button" aria-expanded="false" aria-controls="drawer" data-burger><span></span><span></span><span class="sr">Меню</span></button>
-  </header>
-
-  <div class="drawer" id="drawer" data-drawer hidden>
-    <nav aria-label="Меню">
-      <a href="#services">Перевозки</a>
-      <a href="#fleet">Флот</a>
-      <a href="#geography">География</a>
-      <a href="#company">Компания</a>
-      <a href="#careers">Работа на флоте</a>
-      <a href="#contacts">Контакты</a>
-    </nav>
-    <div class="drawer-foot">
-      <a href="tel:+73812314406">+7 (3812) 31-44-06</a>
-      <a href="mailto:omtnp@omtnp.ru">omtnp@omtnp.ru</a>
-    </div>
-  </div>
+<body data-page="home" data-nav="home">
+  <!-- @header -->
 
   <!-- Фарватер: путь по странице как рейс от Омска к северу -->
   <aside class="fairway" aria-hidden="true" data-fairway>
@@ -56,14 +17,14 @@
       <li data-buoy="services"><i></i><span>Иртыш</span></li>
       <li data-buoy="fleet"><i></i><span>Обь</span></li>
       <li data-buoy="geography"><i></i><span>Обская губа</span></li>
-      <li data-buoy="contacts"><i></i><span>Причал</span></li>
+      <li data-buoy="company"><i></i><span>Причал</span></li>
     </ol>
   </aside>
 
   <main id="main">
-    <!-- Hero: видео идёт вместе с прокруткой -->
+    <!-- Первый экран: видео идёт вместе с прокруткой -->
     <section class="hero" id="hero" data-hero>
-      <div class="hero-stage">
+      <div class="hero-stage" data-hero-stage>
         <img class="hero-poster" src="/media/tanker-poster.webp" alt="" />
         <video class="hero-video" muted playsinline preload="none" aria-hidden="true" data-hero-video
           data-src="/media/tanker-scrub.mp4" data-src-small="/media/tanker-scrub-720.mp4"></video>
@@ -71,19 +32,19 @@
 
         <div class="hero-copy">
           <div class="hero-state is-on" data-state="0">
-            <h1 class="display hero-title">Светлые нефтепродукты и&nbsp;сухие грузы по&nbsp;рекам Сибири</h1>
-            <p class="hero-lead">АО «Омтранснефтепродукт» — судоходная компания из&nbsp;Омска. Перевозим грузы собственным флотом с&nbsp;2008 года.</p>
+            <h1 class="display hero-title" data-chars>Светлые нефтепродукты и&nbsp;сухие грузы по&nbsp;рекам Сибири</h1>
+            <p class="hero-lead">АО «Омтранснефтепродукт» — судоходная компания из&nbsp;Омска. С&nbsp;2008 года перевозим грузы собственным флотом.</p>
           </div>
           <div class="hero-state" data-state="1" aria-hidden="true">
-            <p class="display hero-title">Обь, Иртыш, Енисей. Обская и&nbsp;Тазовская губы</p>
-            <p class="hero-lead">Работаем на&nbsp;внутренних водных путях двух бассейнов — от&nbsp;Омска до&nbsp;северных пунктов.</p>
+            <p class="display hero-title" data-chars>Обь, Иртыш, Енисей. Обская и&nbsp;Тазовская губы</p>
+            <p class="hero-lead">Внутренние водные пути двух бассейнов — от&nbsp;Омска до&nbsp;северных пунктов.</p>
           </div>
           <div class="hero-state" data-state="2" aria-hidden="true">
-            <p class="display hero-title">15&nbsp;000+ тонн нефтепродуктов на&nbsp;борту наших судов</p>
-            <p class="hero-lead">Вместимость наливных судов — от&nbsp;250 до&nbsp;2&nbsp;500 тонн и&nbsp;больше. Подберём состав под ваш объём и&nbsp;пункт выгрузки.</p>
+            <p class="display hero-title" data-chars>15&nbsp;000+ тонн нефтепродуктов на&nbsp;борту наших судов</p>
+            <p class="hero-lead">Наливные суда вместимостью от&nbsp;250 до&nbsp;2&nbsp;500 тонн и&nbsp;больше. Соберём состав под ваш объём и&nbsp;пункт выгрузки.</p>
             <div class="hero-cta">
-              <a class="btn" href="#request">Рассчитать перевозку</a>
-              <a class="btn btn-ghost-light" href="#fleet">Смотреть флот</a>
+              <a class="btn" href="/kontakty/#request" data-magnetic>Рассчитать перевозку</a>
+              <a class="btn btn-ghost-light" href="/flot/" data-magnetic>Смотреть флот</a>
             </div>
           </div>
         </div>
@@ -107,7 +68,7 @@
           <li class="svc" data-reveal>
             <svg class="svc-ico" viewBox="0 0 96 96" aria-hidden="true"><path d="M8 66h80l-8 14H16z"/><path d="M20 66V50h56v16M30 50V40h36v10"/><path class="accent" d="M48 12c-6 9-9 14-9 18a9 9 0 0 0 18 0c0-4-3-9-9-18z"/></svg>
             <div class="svc-body">
-              <h3 class="h3">Светлые нефтепродукты</h3>
+              <h3 class="h3"><a href="/uslugi/#oil" class="svc-link">Светлые нефтепродукты</a></h3>
               <p>Поставка и&nbsp;перевозка нефтеналивным флотом: самоходными танкерами и&nbsp;баржами в&nbsp;составе с&nbsp;толкачом.</p>
             </div>
             <p class="svc-fact"><b>10</b> проектов наливных судов</p>
@@ -115,16 +76,16 @@
           <li class="svc" data-reveal>
             <svg class="svc-ico" viewBox="0 0 96 96" aria-hidden="true"><path d="M8 66h80l-8 14H16z"/><path d="M18 66l14-20 10 10 12-18 18 28"/><path class="accent" d="M70 14v30M58 20h24"/></svg>
             <div class="svc-body">
-              <h3 class="h3">Сухие грузы</h3>
-              <p>Перевозка самоходными и&nbsp;несамоходными сухогрузами. Для грузовых операций на&nbsp;воде есть собственный плавкран.</p>
+              <h3 class="h3"><a href="/uslugi/#dry" class="svc-link">Сухие грузы</a></h3>
+              <p>Самоходные и&nbsp;несамоходные сухогрузы. Для грузовых операций на&nbsp;воде — собственный плавкран.</p>
             </div>
             <p class="svc-fact"><b>3</b> проекта сухогрузов и&nbsp;плавкран</p>
           </li>
           <li class="svc" data-reveal>
             <svg class="svc-ico" viewBox="0 0 96 96" aria-hidden="true"><path d="M6 40h34v18H6zM12 58v6M34 58v6M2 66h44"/><path d="M50 66h40l-6 12H56z"/><path class="accent" d="M40 46c12 0 16 8 20 18"/></svg>
             <div class="svc-body">
-              <h3 class="h3">Перевалка с&nbsp;железной дороги на&nbsp;воду</h3>
-              <p>При необходимости принимаем нефтепродукты и&nbsp;другие грузы с&nbsp;железнодорожного транспорта и&nbsp;отправляем дальше по&nbsp;реке.</p>
+              <h3 class="h3"><a href="/uslugi/#rail" class="svc-link">Перевалка с&nbsp;железной дороги на&nbsp;воду</a></h3>
+              <p>При необходимости принимаем нефтепродукты и&nbsp;другие грузы с&nbsp;железной дороги и&nbsp;отправляем дальше по&nbsp;реке.</p>
             </div>
             <p class="svc-fact">Погрузочно-разгрузочная деятельность лицензирована</p>
           </li>
@@ -132,127 +93,20 @@
       </div>
     </section>
 
-    <!-- Рейс: сцена идёт вместе с прокруткой -->
-    <section class="voyage section-dark" id="voyage" data-voyage>
-      <div class="voyage-pin">
-        <div class="wrap voyage-head">
-          <h2 class="display h2">Как проходит рейс</h2>
-          <ol class="voyage-steps">
-            <li data-step="0"><span class="step-n">1</span><span><b>Налив.</b> Груз принимают на&nbsp;нефтебазе или с&nbsp;железной дороги</span></li>
-            <li data-step="1"><span class="step-n">2</span><span><b>Рейс.</b> Состав идёт по&nbsp;реке к&nbsp;пункту назначения</span></li>
-            <li data-step="2"><span class="step-n">3</span><span><b>Выгрузка.</b> Швартовка и&nbsp;слив нефтепродуктов на&nbsp;берег</span></li>
-          </ol>
-        </div>
+    <!-- @voyage -->
 
-        <svg class="scene" viewBox="0 0 1200 460" preserveAspectRatio="xMidYMax slice" data-scene role="img" aria-label="Толкач с нефтеналивной баржей идёт по реке, швартуется у берегового терминала и сливает груз в резервуары">
-          <defs>
-            <linearGradient id="g-water" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2c4366"/><stop offset="1" stop-color="#14223b"/></linearGradient>
-            <linearGradient id="g-sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#17263f"/><stop offset="1" stop-color="#3a5175"/></linearGradient>
-            <clipPath id="clip-t1"><rect x="952" y="150" width="86" height="134" rx="4"/></clipPath>
-            <clipPath id="clip-t2"><rect x="1058" y="172" width="86" height="112" rx="4"/></clipPath>
-          </defs>
-          <rect width="1200" height="300" fill="url(#g-sky)"/>
-          <g class="far-shore">
-            <path d="M0 268c120-14 220-6 330-16s220-22 340-10 200 14 300 4 160-6 230 0v54H0z" fill="#22365a"/>
-            <path d="M0 284c160-8 300 2 470-6s320-10 480-2 200 4 250 2v28H0z" fill="#1b2d4d"/>
-          </g>
-          <rect y="296" width="1200" height="164" fill="url(#g-water)"/>
-          <g class="waves" data-waves stroke="#5d7aa3" stroke-width="2" stroke-linecap="round" fill="none" opacity=".45">
-            <path d="M40 330h60M220 356h90M420 326h50M600 372h80M760 340h60M120 400h70M340 420h90M520 404h60M820 418h80M980 392h70M1100 352h60"/>
-          </g>
-
-          <!-- Нефтебаза слева: точка налива -->
-          <g class="depot">
-            <path d="M0 284h150v14H0z" fill="#2b3d5c"/>
-            <rect x="18" y="214" width="56" height="70" rx="3" fill="#9fb0c6"/>
-            <rect x="84" y="232" width="48" height="52" rx="3" fill="#9fb0c6"/>
-          </g>
-
-          <!-- Береговой терминал -->
-          <g class="terminal">
-            <path d="M900 284h300v14H900z" fill="#2b3d5c"/>
-            <path d="M912 298v52M960 298v52M1010 298v52M1060 298v52M1110 298v52M1160 298v52" stroke="#2b3d5c" stroke-width="8"/>
-            <rect x="952" y="150" width="86" height="134" rx="4" fill="#dfe4ea"/>
-            <rect x="1058" y="172" width="86" height="112" rx="4" fill="#dfe4ea"/>
-            <g clip-path="url(#clip-t1)"><rect x="952" y="150" width="86" height="134" fill="#c8372d" opacity=".85" data-tank/></g>
-            <g clip-path="url(#clip-t2)"><rect x="1058" y="172" width="86" height="112" fill="#c8372d" opacity=".85" data-tank/></g>
-            <path d="M952 176h86M1058 196h86" stroke="#9fb0c6" stroke-width="2"/>
-            <path d="M922 284v-44h30" stroke="#9fb0c6" stroke-width="5" fill="none"/>
-          </g>
-
-          <!-- Шланг выгрузки -->
-          <path class="hose" d="M842 278c26-44 52-40 80-38" stroke="#e8edf3" stroke-width="6" fill="none" stroke-linecap="round" data-hose/>
-          <path class="flow" d="M842 278c26-44 52-40 80-38" stroke="#c8372d" stroke-width="3" fill="none" stroke-linecap="round" stroke-dasharray="6 14" opacity="0" data-flow/>
-
-          <!-- Наливной рукав на нефтебазе -->
-          <path d="M126 246c40-26 76-18 96 30" stroke="#e8edf3" stroke-width="6" fill="none" stroke-linecap="round" data-load/>
-          <path d="M126 246c40-26 76-18 96 30" stroke="#c8372d" stroke-width="3" fill="none" stroke-linecap="round" stroke-dasharray="6 14" data-load-flow/>
-
-          <!-- Состав: толкач + нефтеналивная баржа -->
-          <g data-convoy>
-            <g data-hull>
-              <path d="M430 286h420l-14 30H448z" fill="#7f2a26"/>
-              <path d="M430 278h420v8H430z" fill="#3a4a63"/>
-              <path d="M460 278v-12h360v12z" fill="#4d5d78"/>
-              <path d="M490 266v-8h300v8z" fill="#5f6f89"/>
-              <path d="M500 258h280" stroke="#9fb0c6" stroke-width="2"/>
-              <circle cx="842" cy="276" r="5" fill="#e8edf3"/>
-              <path d="M300 286h132l-8 30H316z" fill="#c8372d"/>
-              <path d="M330 286v-34h70v34z" fill="#eef1f5"/>
-              <path d="M342 252v-22h46v22z" fill="#eef1f5"/>
-              <path d="M346 238h38" stroke="#2b3d5c" stroke-width="6"/>
-              <path d="M365 230v-26" stroke="#eef1f5" stroke-width="3"/>
-              <path d="M300 300h132" stroke="#1b2b47" stroke-width="2"/>
-            </g>
-            <path class="wake" d="M300 312c-40 6-90 4-150 10M300 306c-50 2-100-2-170-2" stroke="#e8edf3" stroke-width="2" fill="none" opacity=".5"/>
-          </g>
-        </svg>
-      </div>
-    </section>
-
-    <!-- Флот -->
-    <section class="fleet section" id="fleet">
-      <div class="wrap">
-        <header class="section-head">
+    <!-- Флот: лента судов прокручивается вбок -->
+    <section class="fleet-strip" id="fleet" data-strip>
+      <div class="strip-pin">
+        <div class="wrap strip-head">
           <h2 class="display h2" data-split>Собственный флот — 20&nbsp;проектов судов</h2>
-          <p class="section-lead">Толкачи и&nbsp;буксиры, самоходные и&nbsp;несамоходные наливные суда, сухогрузы и&nbsp;плавкран. Часть флота имеет ледовый класс и&nbsp;классы «О» и&nbsp;«М» для работы в&nbsp;губах.</p>
-        </header>
-
-        <figure class="cap-chart">
-          <figcaption>
-            <h3 class="h3">Грузоподъёмность нефтеналивных барж, тонн</h3>
-            <p>Каждая полоса — проект баржи. Составы собирают из&nbsp;нескольких барж под нужный объём.</p>
-          </figcaption>
-          <ol class="bars" data-bars></ol>
-        </figure>
-
-        <div class="fleet-table-wrap">
-          <div class="fleet-tools">
-            <h3 class="h3">Технические характеристики</h3>
-            <div class="chips" role="group" aria-label="Тип судов" data-chips></div>
+          <div class="strip-side">
+            <p class="section-lead">От&nbsp;21-метрового толкача до&nbsp;86-метровой баржи на&nbsp;3&nbsp;230&nbsp;тонн. Все суда — в&nbsp;одном масштабе.</p>
+            <a class="btn btn-ghost" href="/flot/" data-magnetic>Все характеристики</a>
           </div>
-          <div class="table-scroll" tabindex="0" role="region" aria-label="Таблица характеристик флота">
-            <table class="fleet-table">
-              <thead>
-                <tr>
-                  <th scope="col">Проект</th>
-                  <th scope="col">Тип судна</th>
-                  <th scope="col" class="num">Грузоподъёмность, т<span>или мощность, л. с.</span></th>
-                  <th scope="col" class="num">Длина × ширина, м</th>
-                  <th scope="col" class="num">Осадка в&nbsp;грузу, м</th>
-                  <th scope="col">Класс Речного регистра</th>
-                </tr>
-              </thead>
-              <tbody data-fleet></tbody>
-            </table>
-          </div>
-          <p class="fine">Характеристики проектов — по&nbsp;данным omtnp.ru. Название проекта ведёт на&nbsp;его страницу.</p>
         </div>
-
-        <figure class="scale">
-          <figcaption><h3 class="h3">Длина судов в&nbsp;одном масштабе</h3><p>От&nbsp;21,5&nbsp;м у&nbsp;толкача Р&nbsp;96 до&nbsp;86&nbsp;м у&nbsp;баржи М&nbsp;16802.</p></figcaption>
-          <div class="scale-rows" data-scale-rows></div>
-        </figure>
+        <div class="strip-track" data-strip-track></div>
+        <div class="wrap strip-ruler" aria-hidden="true"><span data-strip-meter></span></div>
       </div>
     </section>
 
@@ -262,145 +116,31 @@
         <div class="geo-copy">
           <h2 class="display h2" data-split>Два бассейна и&nbsp;северные губы</h2>
           <p class="section-lead">Перевозки идут по&nbsp;внутренним водным путям Обь-Иртышского бассейна, включая пункты Обской и&nbsp;Тазовской губ, и&nbsp;Енисейского бассейна.</p>
-          <ul class="geo-list">
-            <li><a href="https://www.omtnp.ru/география/обь-иртышский-бассейн" target="_blank" rel="noopener">Обь-Иртышский бассейн</a><span>Основная система перевозок, от&nbsp;Омска на&nbsp;север</span></li>
-            <li><a href="https://www.omtnp.ru/география/обская-губа" target="_blank" rel="noopener">Обская губа</a><span>Северные пункты на&nbsp;выходе Оби</span></li>
-            <li><a href="https://www.omtnp.ru/география/тазовская-губа" target="_blank" rel="noopener">Тазовская губа</a><span>Восточное ответвление Обской губы</span></li>
-            <li><a href="https://www.omtnp.ru/география/енисейский-бассейн" target="_blank" rel="noopener">Енисейский бассейн</a><span>Отдельное направление перевозок</span></li>
-            <li><a href="https://www.omtnp.ru/география/карское-море" target="_blank" rel="noopener">Карское море</a><span>Морской участок на&nbsp;схеме компании</span></li>
-          </ul>
+          <a class="btn btn-ghost-light" href="/geografiya/" data-magnetic>Пролететь по&nbsp;маршруту в&nbsp;3D</a>
         </div>
-        <figure class="map">
-          <svg viewBox="0 0 520 640" role="img" aria-label="Схема водных путей: Иртыш от Омска, Обь до Обской губы, Тазовская губа, Енисей, Карское море">
-            <path class="map-sea" d="M0 0h520v120c-40 10-70 30-110 26s-60-30-100-26-60 34-100 30S140 110 100 118 30 140 0 130z"/>
-            <text class="map-sea-label" x="300" y="56">Карское море</text>
-            <path class="map-bay" d="M228 132c-6 40-4 80 4 118 4 20 2 40-6 58 14-8 22-30 24-56 2-40-4-82-8-120z"/>
-            <path class="map-bay" d="M262 150c10 22 30 40 58 52 20 8 30 22 34 40-14-6-28-18-44-24-28-12-44-40-48-68z"/>
-            <path class="map-river" d="M226 304c-10 34-30 58-56 78-30 24-44 56-48 92-4 34-20 60-44 82"/>
-            <path class="map-river map-river-thin" d="M170 382c34 12 66 34 84 70 16 32 38 58 70 78"/>
-            <path class="map-river" d="M430 140c-6 50 0 100-14 150-12 46-8 96 6 146 12 42 10 90-6 134"/>
-            <path class="map-route" d="M78 556c22-26 38-52 42-84 4-38 20-68 50-90 26-20 46-44 56-78 8-26 8-54 4-86-4-36-2-62 2-86" data-route/>
-            <path class="map-route map-route-2" d="M232 214c30 4 56 -2 86 -6" data-route/>
-            <g class="map-pts">
-              <circle cx="78" cy="556" r="7" class="pt-home"/><text x="92" y="575">Омск</text>
-              <circle cx="122" cy="474" r="4"/><text x="134" y="478">Иртыш</text>
-              <circle cx="226" cy="304" r="4"/><text x="238" y="316">Обь</text>
-              <circle cx="232" cy="214" r="4"/><text x="140" y="236">Обская губа</text>
-              <circle cx="318" cy="208" r="4"/><text x="330" y="222">Тазовская губа</text>
-              <circle cx="424" cy="380" r="4"/><text x="436" y="384">Енисей</text>
-            </g>
-          </svg>
-          <figcaption>Схема без масштаба. Подробные карты — на&nbsp;<a href="https://www.omtnp.ru/география/схема-водных-путей-обь-иртышкого" target="_blank" rel="noopener">omtnp.ru</a></figcaption>
-        </figure>
+        <!-- @map -->
       </div>
     </section>
 
-    <!-- Компания и документы -->
+    <!-- Компания -->
     <section class="company section" id="company">
       <div class="wrap company-grid">
         <div class="company-logo" data-logo-slot="big"></div>
         <div class="company-copy">
           <h2 class="display h2" data-split>Одна из&nbsp;первых частных судоходных компаний Сибири</h2>
-          <p class="section-lead">С&nbsp;2008 года организуем речные перевозки сухих грузов и&nbsp;светлых нефтепродуктов. Собственный флот, опытные менеджеры и&nbsp;плавсостав позволяют доставлять груз качественно, в&nbsp;срок и&nbsp;с&nbsp;наименьшими затратами.</p>
           <blockquote class="pledge" data-reveal>
             <p>С&nbsp;момента создания компании — ни&nbsp;одной претензии по&nbsp;количеству и&nbsp;качеству доставленных нефтепродуктов.</p>
           </blockquote>
+          <a class="link more" href="/kompaniya/">О&nbsp;компании, лицензии и&nbsp;реквизиты</a>
         </div>
       </div>
       <div class="wrap">
-        <dl class="facts">
-          <div><dt data-count="2008">2008</dt><dd>год начала работы</dd></div>
-          <div><dt><span data-count="15000">15 000</span>+</dt><dd>тонн принимают на&nbsp;борт наливные суда компании</dd></div>
-          <div><dt data-count="20">20</dt><dd>проектов судов во&nbsp;флоте</dd></div>
-          <div><dt data-count="2">2</dt><dd>речных бассейна: Обь-Иртышский и&nbsp;Енисейский</dd></div>
-        </dl>
-      </div>
-
-      <div class="wrap docs">
-        <h3 class="h3">Лицензии и&nbsp;допуски</h3>
-        <ul class="docs-list">
-          <li data-reveal><a href="https://www.omtnp.ru/о-компании/лицензии" target="_blank" rel="noopener"><span class="doc-title">Лицензия на&nbsp;перевозку опасных грузов внутренним водным транспортом</span><span class="doc-meta">Федеральная служба по&nbsp;надзору в&nbsp;сфере транспорта</span></a></li>
-          <li data-reveal><a href="https://www.omtnp.ru/о-компании/лицензии" target="_blank" rel="noopener"><span class="doc-title">Свидетельство о&nbsp;признании Российского Речного Регистра</span><span class="doc-meta">На&nbsp;виды работ</span></a></li>
-          <li data-reveal><a href="https://www.omtnp.ru/о-компании/коммерческое-предложение" target="_blank" rel="noopener"><span class="doc-title">План по&nbsp;ликвидации аварийных разливов нефти и&nbsp;нефтепродуктов</span><span class="doc-meta">Обь-Иртышский бассейн, согласован на&nbsp;региональном уровне</span></a></li>
-          <li data-reveal><a href="https://www.omtnp.ru/о-компании/награды" target="_blank" rel="noopener"><span class="doc-title">Награды компании</span><span class="doc-meta">Раздел на&nbsp;omtnp.ru</span></a></li>
-        </ul>
-      </div>
-    </section>
-
-    <!-- Работа -->
-    <section class="careers section-dark" id="careers">
-      <div class="careers-media"><img src="/media/river-dusk.webp" alt="" loading="lazy" data-parallax /></div>
-      <div class="wrap careers-inner">
-        <h2 class="display h2" data-split>Работа на&nbsp;флоте</h2>
-        <p class="section-lead">Набираем плавсостав и&nbsp;береговых специалистов. На&nbsp;эти должности ищем людей чаще всего:</p>
-        <ul class="roles" data-roles></ul>
-        <div class="careers-cta">
-          <a class="btn btn-light" href="tel:+79236860606">Позвонить в&nbsp;отдел кадров</a>
-          <a class="link-light" href="mailto:kadr@omtnp.ru?subject=%D0%A0%D0%B5%D0%B7%D1%8E%D0%BC%D0%B5">Отправить резюме на&nbsp;kadr@omtnp.ru</a>
-          <a class="link-light" href="https://www.omtnp.ru/вакансии/актуальные" target="_blank" rel="noopener">Актуальные вакансии</a>
-        </div>
-      </div>
-    </section>
-
-    <!-- Контакты и заявка -->
-    <section class="contacts section" id="contacts">
-      <div class="wrap contacts-grid">
-        <div class="request" id="request">
-          <h2 class="display h2" data-split>Заявка на&nbsp;перевозку</h2>
-          <p class="section-lead">Ответим с&nbsp;условиями, сроками и&nbsp;стоимостью. Заявка откроется в&nbsp;вашей почтовой программе — останется нажать «Отправить».</p>
-          <form class="form" data-request novalidate>
-            <fieldset class="seg">
-              <legend>Груз</legend>
-              <label><input type="radio" name="cargo" value="Светлые нефтепродукты" checked /><span>Нефтепродукты</span></label>
-              <label><input type="radio" name="cargo" value="Сухой груз" /><span>Сухой груз</span></label>
-              <label><input type="radio" name="cargo" value="Перевалка с ж/д на воду" /><span>Перевалка с&nbsp;ж/д</span></label>
-            </fieldset>
-            <div class="row2">
-              <label class="field"><span>Откуда</span><input name="from" autocomplete="off" placeholder="Например, Омск" /></label>
-              <label class="field"><span>Куда</span><input name="to" autocomplete="off" placeholder="Пункт выгрузки" /></label>
-            </div>
-            <div class="row2">
-              <label class="field"><span>Объём, тонн</span><input name="volume" inputmode="numeric" /></label>
-              <label class="field"><span>Сроки</span><input name="dates" placeholder="Например, июнь" /></label>
-            </div>
-            <div class="row2">
-              <label class="field"><span>Компания и&nbsp;контактное лицо</span><input name="name" autocomplete="organization" /></label>
-              <label class="field"><span>Телефон или e-mail</span><input name="contact" autocomplete="email" /></label>
-            </div>
-            <label class="field"><span>Комментарий</span><textarea name="note" rows="3"></textarea></label>
-            <p class="form-error" role="alert" data-form-error hidden></p>
-            <button class="btn" type="submit">Открыть письмо с&nbsp;заявкой</button>
-          </form>
-        </div>
-
-        <div class="desk">
-          <h3 class="h3">Центральный офис</h3>
-          <p class="addr">644024, г.&nbsp;Омск, ул.&nbsp;10&nbsp;лет Октября,&nbsp;33</p>
-          <p class="desk-links"><a class="link" href="https://yandex.ru/maps/?text=%D0%9E%D0%BC%D1%81%D0%BA%2C%2010%20%D0%BB%D0%B5%D1%82%20%D0%9E%D0%BA%D1%82%D1%8F%D0%B1%D1%80%D1%8F%2C%2033" target="_blank" rel="noopener">Открыть на&nbsp;Яндекс Картах</a><a class="link" href="mailto:omtnp@omtnp.ru">omtnp@omtnp.ru</a></p>
-          <ul class="phones" data-contacts></ul>
-          <details class="req">
-            <summary>Реквизиты компании</summary>
-            <dl data-requisites></dl>
-            <button class="btn btn-ghost btn-sm" type="button" data-copy-req>Скопировать реквизиты</button>
-          </details>
-        </div>
+        <!-- @facts -->
       </div>
     </section>
   </main>
 
-  <footer class="foot section-dark">
-    <div class="wrap">
-      <p class="foot-word display" aria-hidden="true" data-foot-word>Омтранснефтепродукт</p>
-      <div class="foot-row">
-        <span class="foot-logo" data-logo-slot="foot"></span>
-        <p>© АО «Омтранснефтепродукт», 2008–2026</p>
-        <p><a href="https://www.omtnp.ru" target="_blank" rel="noopener">Документы и&nbsp;архив вакансий на&nbsp;omtnp.ru</a></p>
-        <a href="#hero" class="to-top">Наверх</a>
-      </div>
-    </div>
-  </footer>
-
-  <div class="toast" role="status" aria-live="polite" data-toast></div>
+  <!-- @footer -->
   <script type="module" src="/src/main.js"></script>
 </body>
 </html>

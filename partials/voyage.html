@@ -1,0 +1,78 @@
+
+    <!-- Рейс: сцена идёт вместе с прокруткой -->
+    <section class="voyage section-dark" id="voyage" data-voyage>
+      <div class="voyage-pin">
+        <div class="wrap voyage-head">
+          <h2 class="display h2">Как проходит рейс</h2>
+          <ol class="voyage-steps">
+            <li data-step="0"><span class="step-n">1</span><span><b>Налив.</b> Груз принимают на&nbsp;нефтебазе или с&nbsp;железной дороги</span></li>
+            <li data-step="1"><span class="step-n">2</span><span><b>Рейс.</b> Состав идёт по&nbsp;реке к&nbsp;пункту назначения</span></li>
+            <li data-step="2"><span class="step-n">3</span><span><b>Выгрузка.</b> Швартовка и&nbsp;слив нефтепродуктов на&nbsp;берег</span></li>
+          </ol>
+        </div>
+
+        <svg class="scene" viewBox="0 0 1200 460" preserveAspectRatio="xMidYMax slice" data-scene role="img" aria-label="Толкач с нефтеналивной баржей идёт по реке, швартуется у берегового терминала и сливает груз в резервуары">
+          <defs>
+            <linearGradient id="g-water" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2c4366"/><stop offset="1" stop-color="#14223b"/></linearGradient>
+            <linearGradient id="g-sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#17263f"/><stop offset="1" stop-color="#3a5175"/></linearGradient>
+            <clipPath id="clip-t1"><rect x="952" y="150" width="86" height="134" rx="4"/></clipPath>
+            <clipPath id="clip-t2"><rect x="1058" y="172" width="86" height="112" rx="4"/></clipPath>
+          </defs>
+          <rect width="1200" height="300" fill="url(#g-sky)"/>
+          <g class="far-shore">
+            <path d="M0 268c120-14 220-6 330-16s220-22 340-10 200 14 300 4 160-6 230 0v54H0z" fill="#22365a"/>
+            <path d="M0 284c160-8 300 2 470-6s320-10 480-2 200 4 250 2v28H0z" fill="#1b2d4d"/>
+          </g>
+          <rect y="296" width="1200" height="164" fill="url(#g-water)"/>
+          <g class="waves" data-waves stroke="#5d7aa3" stroke-width="2" stroke-linecap="round" fill="none" opacity=".45">
+            <path d="M40 330h60M220 356h90M420 326h50M600 372h80M760 340h60M120 400h70M340 420h90M520 404h60M820 418h80M980 392h70M1100 352h60"/>
+          </g>
+
+          <!-- Нефтебаза слева: точка налива -->
+          <g class="depot">
+            <path d="M0 284h150v14H0z" fill="#2b3d5c"/>
+            <rect x="18" y="214" width="56" height="70" rx="3" fill="#9fb0c6"/>
+            <rect x="84" y="232" width="48" height="52" rx="3" fill="#9fb0c6"/>
+          </g>
+
+          <!-- Береговой терминал -->
+          <g class="terminal">
+            <path d="M900 284h300v14H900z" fill="#2b3d5c"/>
+            <path d="M912 298v52M960 298v52M1010 298v52M1060 298v52M1110 298v52M1160 298v52" stroke="#2b3d5c" stroke-width="8"/>
+            <rect x="952" y="150" width="86" height="134" rx="4" fill="#dfe4ea"/>
+            <rect x="1058" y="172" width="86" height="112" rx="4" fill="#dfe4ea"/>
+            <g clip-path="url(#clip-t1)"><rect x="952" y="150" width="86" height="134" fill="#c8372d" opacity=".85" data-tank/></g>
+            <g clip-path="url(#clip-t2)"><rect x="1058" y="172" width="86" height="112" fill="#c8372d" opacity=".85" data-tank/></g>
+            <path d="M952 176h86M1058 196h86" stroke="#9fb0c6" stroke-width="2"/>
+            <path d="M922 284v-44h30" stroke="#9fb0c6" stroke-width="5" fill="none"/>
+          </g>
+
+          <!-- Шланг выгрузки -->
+          <path class="hose" d="M842 278c26-44 52-40 80-38" stroke="#e8edf3" stroke-width="6" fill="none" stroke-linecap="round" data-hose/>
+          <path class="flow" d="M842 278c26-44 52-40 80-38" stroke="#c8372d" stroke-width="3" fill="none" stroke-linecap="round" stroke-dasharray="6 14" opacity="0" data-flow/>
+
+          <!-- Наливной рукав на нефтебазе -->
+          <path d="M126 246c40-26 76-18 96 30" stroke="#e8edf3" stroke-width="6" fill="none" stroke-linecap="round" data-load/>
+          <path d="M126 246c40-26 76-18 96 30" stroke="#c8372d" stroke-width="3" fill="none" stroke-linecap="round" stroke-dasharray="6 14" data-load-flow/>
+
+          <!-- Состав: толкач + нефтеналивная баржа -->
+          <g data-convoy>
+            <g data-hull>
+              <path d="M430 286h420l-14 30H448z" fill="#7f2a26"/>
+              <path d="M430 278h420v8H430z" fill="#3a4a63"/>
+              <path d="M460 278v-12h360v12z" fill="#4d5d78"/>
+              <path d="M490 266v-8h300v8z" fill="#5f6f89"/>
+              <path d="M500 258h280" stroke="#9fb0c6" stroke-width="2"/>
+              <circle cx="842" cy="276" r="5" fill="#e8edf3"/>
+              <path d="M300 286h132l-8 30H316z" fill="#c8372d"/>
+              <path d="M330 286v-34h70v34z" fill="#eef1f5"/>
+              <path d="M342 252v-22h46v22z" fill="#eef1f5"/>
+              <path d="M346 238h38" stroke="#2b3d5c" stroke-width="6"/>
+              <path d="M365 230v-26" stroke="#eef1f5" stroke-width="3"/>
+              <path d="M300 300h132" stroke="#1b2b47" stroke-width="2"/>
+            </g>
+            <path class="wake" d="M300 312c-40 6-90 4-150 10M300 306c-50 2-100-2-170-2" stroke="#e8edf3" stroke-width="2" fill="none" opacity=".5"/>
+          </g>
+        </svg>
+      </div>
+    </section>

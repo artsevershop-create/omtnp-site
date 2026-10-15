@@ -1,2 +1,4 @@
 node_modules/
 dist/
+# страницы судов генерирует scripts/gen-vessels.mjs
+flot/*/
