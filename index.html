@@ -4,7 +4,7 @@
   <!-- @head -->
   <title>АО «Омтранснефтепродукт» — речные перевозки нефтепродуктов и сухих грузов</title>
   <meta name="description" content="Судоходная компания из Омска. С 2008 года перевозим светлые нефтепродукты и сухие грузы по Обь-Иртышскому и Енисейскому бассейнам, Обской и Тазовской губам." />
-  <link rel="preload" as="image" href="/media/tanker-poster.webp" />
+  <link rel="preload" as="image" href="/media/tanker-still.webp" />
 </head>
 <body data-page="home" data-nav="home">
   <!-- @header -->
@@ -22,12 +22,11 @@
   </aside>
 
   <main id="main">
-    <!-- Первый экран: видео идёт вместе с прокруткой -->
+    <!-- Первый экран: живой кадр с танкером (WebGL), заголовки сменяются при прокрутке -->
     <section class="hero" id="hero" data-hero>
       <div class="hero-stage" data-hero-stage>
-        <img class="hero-poster" src="/media/tanker-poster.webp" alt="" />
-        <video class="hero-video" muted playsinline preload="none" aria-hidden="true" data-hero-video
-          data-src="/media/tanker-scrub.mp4" data-src-small="/media/tanker-scrub-720.mp4"></video>
+        <img class="hero-poster" src="/media/tanker-still.webp" alt="Нефтеналивной танкер с буксиром идёт по северной реке" data-hero-img />
+        <canvas class="hero-gl" aria-hidden="true" data-hero-gl></canvas>
         <div class="hero-shade"></div>
 
         <div class="hero-copy">
@@ -51,7 +50,7 @@
 
         <div class="hero-meter" aria-hidden="true">
           <span class="hero-meter-track"><span class="hero-meter-fill" data-hero-meter></span></span>
-          <span class="hero-meter-hint">Прокручивайте — судно пойдёт по&nbsp;реке</span>
+          <span class="hero-meter-hint">Прокручивайте — камера подлетит к&nbsp;танкеру</span>
         </div>
       </div>
     </section>

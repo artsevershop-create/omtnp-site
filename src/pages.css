@@ -38,6 +38,12 @@
 @media (hover: hover) and (pointer: fine) { .js body, .js a, .js button, .js summary, .js label { cursor: none; } .js input, .js textarea { cursor: text; } }
 
 .hero-stage { will-change: clip-path; }
+.hero-gl { position: absolute; inset: 0; width: 100%; height: 100%; display: block; opacity: 0; transition: opacity 1.2s var(--ease); }
+.hero-gl.is-ready { opacity: 1; }
+@media (max-aspect-ratio: 1) { .hero-poster { object-position: 60% 50%; } }
+/* Без WebGL — медленный наезд на картинку */
+.hero-stage.is-static .hero-poster { animation: hero-drift 24s ease-in-out infinite alternate; transform-origin: 50% 60%; }
+@keyframes hero-drift { from { transform: scale(1.02); } to { transform: scale(1.12); } }
 .svc-link { text-decoration: none; background: linear-gradient(currentColor, currentColor) 0 100% / 0 2px no-repeat; transition: background-size .4s var(--ease); }
 .svc-link:hover { background-size: 100% 2px; }
 

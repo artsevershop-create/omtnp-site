@@ -2,6 +2,7 @@
 import { $, $$, gsap, ScrollTrigger, reduced, clamp01, splitChars, splitLines } from '../lib/core.js';
 import { initVoyage } from '../scenes/voyage.js';
 import { renderStrip } from '../lib/fleet-ui.js';
+import { initHeroGL } from '../scenes/hero-gl.js';
 
 export default function home() {
   initHero();
@@ -11,11 +12,10 @@ export default function home() {
   initMap($('.map'));
 }
 
-/* ---------- Первый экран: видео идёт за прокруткой, заголовки собираются по буквам ---------- */
+/* ---------- Первый экран: живой кадр с танкером, заголовки собираются по буквам ---------- */
 function initHero() {
   const hero = $('[data-hero]');
   const stage = $('[data-hero-stage]');
-  const video = $('[data-hero-video]');
   const states = $$('[data-state]');
   const meter = $('[data-hero-meter]');
   const chars = states.map((s) => splitChars($('.hero-title', s)));
@@ -59,45 +59,10 @@ function initHero() {
   });
 
   if (reduced) return;
-  // Танкер идёт сам: ролик играет по кругу. Два плеера по очереди — перед концом одного
-  // второй стартует с начала и плавно проявляется, поэтому склейки не видно.
-  const FADE = .8;
-  const twin = video.cloneNode();
-  twin.removeAttribute('data-hero-video');
-  video.after(twin);
-  const players = [video, twin];
-  let active = 0;
-  const handoff = () => {
-    const cur = players[active], next = players[1 - active];
-    next.currentTime = 0;
-    next.play().catch(() => {});
-    gsap.set(next, { zIndex: 1 });
-    gsap.set(cur, { zIndex: 0 });
-    gsap.fromTo(next, { opacity: 0 }, { opacity: 1, duration: FADE, ease: 'none', onComplete: () => cur.pause() });
-    active = 1 - active;
-  };
-  players.forEach((v) => {
-    v.addEventListener('timeupdate', () => {
-      if (v === players[active] && v.duration && v.currentTime > v.duration - FADE - .15 && !v.dataset.handed) {
-        v.dataset.handed = '1';
-        handoff();
-        setTimeout(() => { delete v.dataset.handed; }, FADE * 1000 + 300);
-      }
-    });
+  // Живой кадр на WebGL; без WebGL остаётся картинка с медленным наездом (CSS)
+  initHeroGL($('[data-hero-gl]'), $('[data-hero-img]'), () => p).then((ok) => {
+    if (!ok) stage.classList.add('is-static');
   });
-  const start = () => {
-    const src = innerWidth < 760 ? video.dataset.srcSmall : video.dataset.src;
-    players.forEach((v) => { v.src = src; v.preload = 'auto'; v.loop = false; v.style.transition = 'none'; });
-    gsap.set(twin, { opacity: 0 });
-    video.addEventListener('loadeddata', () => { video.classList.add('is-ready'); twin.classList.add('is-ready'); video.play().catch(() => {}); }, { once: true });
-  };
-  // Ролик грузим после остальной страницы; если страница уже загружена — сразу
-  if (document.readyState === 'complete') start(); else addEventListener('load', start, { once: true });
-  // Экран ушёл из вида — ролик на паузе, чтобы не грузить телефон
-  new IntersectionObserver(([e]) => {
-    const v = players[active];
-    if (e.isIntersecting) v.play().catch(() => {}); else v.pause();
-  }).observe(hero);
 }
 
 /* ---------- Фарватер слева ---------- */
