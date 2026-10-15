@@ -5,7 +5,8 @@ import { fileURLToPath } from 'node:url';
 
 const root = dirname(fileURLToPath(import.meta.url));
 const partial = (name) => readFileSync(resolve(root, 'partials', name), 'utf8');
-const SKIP = ['node_modules', 'dist', 'public', 'partials', 'src', 'scripts', 'design', '.git'];
+const BASE = process.env.BASE_PATH || '/';
+const SKIP =['node_modules', 'dist', 'public', 'partials', 'src', 'scripts', 'design', '.git'];
 
 // Все страницы сайта: index.html в корне и в подпапках
 function pages(dir = root, out = {}) {
@@ -27,10 +28,16 @@ function partials() {
       handler(html) {
         const nav = (html.match(/<body[^>]*data-nav="([^"]*)"/) || [])[1] || '';
         // Любой <!-- @имя --> заменяется на partials/имя.html
-        return html.replace(/<!-- @([\w-]+) -->/g, (_, name) => {
+        const out = html.replace(/<!-- @([\w-]+) -->/g, (_, name) => {
           const part = partial(`${name}.html`);
           return name === 'header' ? part.replaceAll(`data-nav-id="${nav}"`, `data-nav-id="${nav}" aria-current="page"`) : part;
         });
+        // Сайт может жить в подпапке (GitHub Pages): внутренние ссылки получают префикс BASE
+        // (картинки, видео и <link> Vite переписывает сам — трогаем только ссылки <a> и data-src)
+        if (BASE === '/') return out;
+        return out
+          .replace(/(<a\b[^>]*?\shref=")\/(?!\/)/g, `$1${BASE}`)
+          .replace(/(data-src(?:-small)?=")\/(?!\/)/g, `$1${BASE}`);
       },
     },
     handleHotUpdate({ file, server }) {
@@ -41,6 +48,7 @@ function partials() {
 
 export default defineConfig({
   appType: 'mpa',
+  base: BASE,
   server: { host: '127.0.0.1' },
   plugins: [partials()],
   build: { rollupOptions: { input: pages() } },

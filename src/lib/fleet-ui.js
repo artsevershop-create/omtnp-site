@@ -4,13 +4,14 @@ import { FLEET, TYPES, GROUPS } from '../data.js';
 import { vesselSvg } from './vessel-svg.js';
 
 const groupOf = (v) => TYPES[v.type].group;
+const BASE = import.meta.env.BASE_URL;
 
 export function renderBars(host) {
   const tankers = FLEET.filter((v) => v.type === 'bargeTanker').sort((a, b) => b.cargo - a.cargo);
   const max = tankers[0].cargo;
   host.innerHTML = tankers.map((v) => `
     <li class="bar" style="--w:${((v.cargo / max) * 82).toFixed(2)}%">
-      <a class="bar-name" href="/flot/${v.slug}/">${esc(v.project)}</a>
+      <a class="bar-name" href="${BASE}flot/${v.slug}/">${esc(v.project)}</a>
       <span class="bar-track"><span class="bar-fill"></span><span class="bar-val" data-num="${v.cargo}">${fmt.format(v.cargo)}</span></span>
     </li>`).join('');
   if (reduced) return;
@@ -32,7 +33,7 @@ export function renderTable(chipsHost, body) {
     : v.cargo ? `<b>${fmt.format(v.cargo)}</b>${v.cargoNote ? ` <span class="muted">(${esc(v.cargoNote)})</span>` : ''}` : `<span class="muted">${esc(v.power)} л. с.</span>`;
   body.innerHTML = FLEET.map((v) => `
     <tr data-group="${groupOf(v)}" data-cursor="Открыть">
-      <th scope="row"><a href="/flot/${v.slug}/">${esc(v.project)}</a></th>
+      <th scope="row"><a href="${BASE}flot/${v.slug}/">${esc(v.project)}</a></th>
       <td><span class="type-dot ${groupOf(v)}"></span>${TYPES[v.type].label}</td>
       <td class="num">${cell(v)}</td>
       <td class="num">${fmt.format(v.length)} × ${fmt.format(v.width)}</td>
@@ -59,7 +60,7 @@ export function renderScale(host) {
   const list = [...FLEET].sort((a, b) => b.length - a.length);
   const max = list[0].length;
   host.innerHTML = list.map((v) => `
-    <a class="hull ${groupOf(v)}" href="/flot/${v.slug}/" style="--w:${((v.length / max) * 100).toFixed(2)}%">
+    <a class="hull ${groupOf(v)}" href="${BASE}flot/${v.slug}/" style="--w:${((v.length / max) * 100).toFixed(2)}%">
       <span>${esc(v.project)} <span class="hull-len">${fmt.format(v.length)} м</span></span>
       <span class="hull-shape">${vesselSvg(v).svg}</span>
     </a>`).join('');
@@ -86,7 +87,7 @@ export function renderStrip(section) {
   const track = $('[data-strip-track]', section);
   const list = [...FLEET].sort((a, b) => b.length - a.length);
   track.innerHTML = list.map((v) => `
-    <a class="strip-item ${groupOf(v)}" href="/flot/${v.slug}/" style="--len:${v.length}" data-cursor="Открыть">
+    <a class="strip-item ${groupOf(v)}" href="${BASE}flot/${v.slug}/" style="--len:${v.length}" data-cursor="Открыть">
       <span class="strip-shape">${vesselSvg(v).svg}</span>
       <span class="strip-name">${esc(v.project)}</span>
       <span class="strip-meta">${TYPES[v.type].label}, ${fmt.format(v.length)} м</span>
