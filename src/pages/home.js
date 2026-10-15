@@ -59,22 +59,45 @@ function initHero() {
   });
 
   if (reduced) return;
-  // Ролик скачиваем целиком: перемотка по загруженному файлу идёт без рывков
-  addEventListener('load', async () => {
+  // Танкер идёт сам: ролик играет по кругу. Два плеера по очереди — перед концом одного
+  // второй стартует с начала и плавно проявляется, поэтому склейки не видно.
+  const FADE = .8;
+  const twin = video.cloneNode();
+  twin.removeAttribute('data-hero-video');
+  video.after(twin);
+  const players = [video, twin];
+  let active = 0;
+  const handoff = () => {
+    const cur = players[active], next = players[1 - active];
+    next.currentTime = 0;
+    next.play().catch(() => {});
+    gsap.set(next, { zIndex: 1 });
+    gsap.set(cur, { zIndex: 0 });
+    gsap.fromTo(next, { opacity: 0 }, { opacity: 1, duration: FADE, ease: 'none', onComplete: () => cur.pause() });
+    active = 1 - active;
+  };
+  players.forEach((v) => {
+    v.addEventListener('timeupdate', () => {
+      if (v === players[active] && v.duration && v.currentTime > v.duration - FADE - .15 && !v.dataset.handed) {
+        v.dataset.handed = '1';
+        handoff();
+        setTimeout(() => { delete v.dataset.handed; }, FADE * 1000 + 300);
+      }
+    });
+  });
+  const start = () => {
     const src = innerWidth < 760 ? video.dataset.srcSmall : video.dataset.src;
-    try { video.src = URL.createObjectURL(await (await fetch(src)).blob()); } catch { video.src = src; }
-    video.addEventListener('loadeddata', () => video.classList.add('is-ready'), { once: true });
-    video.preload = 'auto';
-    video.load();
-  });
-  let cur = 0;
-  gsap.ticker.add((_, dt) => {
-    if (!video.duration) return;
-    const target = clamp01(p / .86) * (video.duration - .05);
-    cur += (target - cur) * (1 - Math.exp(-(dt / 1000) * 8));
-    if (Math.abs(target - cur) < .002) cur = target;
-    if (!video.seeking && Math.abs(video.currentTime - cur) > .008) video.currentTime = cur;
-  });
+    players.forEach((v) => { v.src = src; v.preload = 'auto'; v.loop = false; v.style.transition = 'none'; });
+    gsap.set(twin, { opacity: 0 });
+    video.addEventListener('loadeddata', () => { video.classList.add('is-ready'); twin.classList.add('is-ready'); video.play().catch(() => {}); }, { once: true });
+  };
+  // Ролик грузим после остальной страницы; если страница уже загружена — сразу
+  if (document.readyState === 'complete') start(); else addEventListener('load', start, { once: true });
+  // Экран ушёл из вида — ролик на паузе, чтобы не грузить телефон
+  new IntersectionObserver(([e]) => {
+    const v = players[active];
+    if (e.isIntersecting) v.play().catch(() => {}); else v.pause();
+  }).observe(hero);
 }
 
 /* ---------- Фарватер слева ---------- */
