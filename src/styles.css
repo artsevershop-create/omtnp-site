@@ -328,7 +328,7 @@ body.menu-open .top { background: transparent; color: #fff; box-shadow: none; }
 
 /* Подвал */
 .foot { padding: clamp(72px, 10vw, 120px) 0 32px; overflow: hidden; }
-.foot-word { font-size: clamp(3rem, 12.5vw, 13rem); line-height: .85; color: var(--brand); white-space: nowrap; margin-left: -.04em; }
+.foot-word { font-size: clamp(2.2rem, 8.4vw, 11.5rem); line-height: .85; color: #dfe6ef; white-space: nowrap; margin-left: -.04em; }
 .foot-row { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 32px; margin-top: 48px; font-size: .875rem; color: var(--on-dark-soft); }
 .foot-row p { margin: 0; }
 .foot-row a { text-decoration: none; }

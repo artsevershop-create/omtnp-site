@@ -197,7 +197,8 @@ function initReveals() {
     gsap.fromTo(img, { yPercent: -10 }, { yPercent: 6, ease: 'none', scrollTrigger: { trigger: img.parentElement, start: 'top bottom', end: 'bottom top', scrub: true } });
   });
   const word = $('[data-foot-word]');
-  if (word) gsap.fromTo(word, { xPercent: 10 }, { xPercent: -8, ease: 'none', scrollTrigger: { trigger: word, start: 'top bottom', end: 'bottom top', scrub: true } });
+  // Название целиком в ширину страницы — поднимается снизу, когда подвал появляется
+  if (word) gsap.from(word, { yPercent: 60, opacity: 0, duration: 1.4, ease: 'expo.out', scrollTrigger: { trigger: word, start: 'top 95%' } });
   $$('.company-logo').forEach((el) => logoIntro(el, { scrollTrigger: { trigger: el, start: 'top 85%' } }));
   const foot = $('.foot-logo');
   if (foot) logoIntro(foot, { scrollTrigger: { trigger: foot, start: 'top 95%' } });
