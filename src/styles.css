@@ -99,8 +99,8 @@ button { font: inherit; color: inherit; }
 .nav { display: none; gap: 26px; font-size: .9375rem; }
 .nav a { text-decoration: none; opacity: .85; position: relative; padding: 6px 0; }
 .nav a::after { content: ''; position: absolute; left: 0; right: 0; bottom: 0; height: 2px; background: var(--buoy); transform: scaleX(0); transform-origin: left; transition: transform .3s var(--ease); }
-.nav a:hover, .nav a.is-here { opacity: 1; }
-.nav a:hover::after, .nav a.is-here::after { transform: scaleX(1); }
+.nav a:hover, .nav a[aria-current] { opacity: 1; }
+.nav a:hover::after, .nav a[aria-current]::after { transform: scaleX(1); }
 .top-phone { display: none; text-decoration: none; font-weight: 600; font-variant-numeric: tabular-nums; }
 .top-cta { display: none; }
 .burger { width: 44px; height: 44px; border: 0; background: none; display: grid; place-content: center; gap: 7px; cursor: pointer; }

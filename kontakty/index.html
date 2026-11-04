@@ -18,7 +18,7 @@
 
     <section class="section-tight">
       <div class="wrap">
-        <ul class="phone-grid" data-contacts></ul>
+        <ul class="phone-grid" data-contacts><!-- @@contacts --></ul>
       </div>
     </section>
 
@@ -50,10 +50,15 @@
             <p class="form-error" role="alert" data-form-error hidden></p>
             <button class="btn" type="submit" data-magnetic>Открыть письмо с&nbsp;заявкой</button>
           </form>
+          <div class="form-sent" data-form-sent hidden>
+            <h3 class="h3">Письмо не открылось?</h3>
+            <p>Скопируйте заявку и отправьте её на&nbsp;<a class="link" href="mailto:omtnp@omtnp.ru">omtnp@omtnp.ru</a> или позвоните в&nbsp;службу грузовой и&nbsp;коммерческой работы: <a class="link" href="tel:+73812510308">+7&nbsp;(3812)&nbsp;51-03-08</a>.</p>
+            <button class="btn btn-ghost btn-sm" type="button" data-copy-request>Скопировать заявку</button>
+          </div>
         </div>
         <div class="desk">
           <h2 class="h3">Реквизиты</h2>
-          <dl class="req-list req-compact" data-requisites></dl>
+          <dl class="req-list req-compact" data-requisites><!-- @@requisites --></dl>
           <button class="btn btn-ghost btn-sm" type="button" data-copy-req data-magnetic>Скопировать реквизиты</button>
         </div>
       </div>

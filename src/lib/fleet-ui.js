@@ -1,19 +1,7 @@
-// Флот: диаграмма грузоподъёмности, таблица с фильтром, масштабная линейка, карточки типов, лента судов на главной.
-import { $, $$, gsap, ScrollTrigger, reduced, fmt, esc } from './core.js';
-import { FLEET, TYPES, GROUPS } from '../data.js';
-import { vesselSvg } from './vessel-svg.js';
+// Флот: поведение и анимация блоков. Сама разметка приходит из HTML (см. templates.js).
+import { $, $$, gsap, ScrollTrigger, reduced, fmt } from './core.js';
 
-const groupOf = (v) => TYPES[v.type].group;
-const BASE = import.meta.env.BASE_URL;
-
-export function renderBars(host) {
-  const tankers = FLEET.filter((v) => v.type === 'bargeTanker').sort((a, b) => b.cargo - a.cargo);
-  const max = tankers[0].cargo;
-  host.innerHTML = tankers.map((v) => `
-    <li class="bar" style="--w:${((v.cargo / max) * 82).toFixed(2)}%">
-      <a class="bar-name" href="${BASE}flot/${v.slug}/">${esc(v.project)}</a>
-      <span class="bar-track"><span class="bar-fill"></span><span class="bar-val" data-num="${v.cargo}">${fmt.format(v.cargo)}</span></span>
-    </li>`).join('');
+export function animateBars(host) {
   if (reduced) return;
   $$('.bar', host).forEach((bar, i) => {
     const val = $('.bar-val', bar);
@@ -25,21 +13,8 @@ export function renderBars(host) {
   });
 }
 
-export function renderTable(chipsHost, body) {
-  const counts = Object.fromEntries(GROUPS.map((g) => [g.id, g.id === 'all' ? FLEET.length : FLEET.filter((v) => groupOf(v) === g.id).length]));
-  chipsHost.innerHTML = GROUPS.map((g, i) => `<button class="chip" type="button" data-group="${g.id}" aria-pressed="${i === 0}">${g.label}<small>${counts[g.id]}</small></button>`).join('');
-  const cell = (v) => v.type === 'crane'
-    ? `<span class="muted">${esc(v.power)} л. с.</span>`
-    : v.cargo ? `<b>${fmt.format(v.cargo)}</b>${v.cargoNote ? ` <span class="muted">(${esc(v.cargoNote)})</span>` : ''}` : `<span class="muted">${esc(v.power)} л. с.</span>`;
-  body.innerHTML = FLEET.map((v) => `
-    <tr data-group="${groupOf(v)}" data-cursor="Открыть">
-      <th scope="row"><a href="${BASE}flot/${v.slug}/">${esc(v.project)}</a></th>
-      <td><span class="type-dot ${groupOf(v)}"></span>${TYPES[v.type].label}</td>
-      <td class="num">${cell(v)}</td>
-      <td class="num">${fmt.format(v.length)} × ${fmt.format(v.width)}</td>
-      <td class="num">${v.draft}</td>
-      <td>${esc(v.cls)}</td>
-    </tr>`).join('');
+/** Фильтр таблицы по группе судов; возвращает функцию выбора группы. */
+export function initTable(chipsHost, body) {
   // Вся строка — ссылка на страницу судна
   body.addEventListener('click', (e) => {
     const tr = e.target.closest('tr');
@@ -56,45 +31,19 @@ export function renderTable(chipsHost, body) {
   return apply;
 }
 
-export function renderScale(host) {
-  const list = [...FLEET].sort((a, b) => b.length - a.length);
-  const max = list[0].length;
-  host.innerHTML = list.map((v) => `
-    <a class="hull ${groupOf(v)}" href="${BASE}flot/${v.slug}/" style="--w:${((v.length / max) * 100).toFixed(2)}%">
-      <span>${esc(v.project)} <span class="hull-len">${fmt.format(v.length)} м</span></span>
-      <span class="hull-shape">${vesselSvg(v).svg}</span>
-    </a>`).join('');
+export function animateScale(host) {
   if (!reduced) gsap.from($$('.hull-shape', host), { scaleX: 0, transformOrigin: 'left center', duration: 1.1, ease: 'expo.out', stagger: .03, scrollTrigger: { trigger: host, start: 'top 85%' } });
 }
 
-export function renderTypes(host, onPick) {
-  const order = ['bargeTanker', 'selfTanker', 'pusher', 'tug', 'bargeDry', 'selfDry', 'crane'];
-  host.innerHTML = order.map((type) => {
-    const list = FLEET.filter((v) => v.type === type);
-    const biggest = [...list].sort((a, b) => b.length - a.length)[0];
-    return `<li data-reveal>
-      <a class="type-card ${TYPES[type].group}" href="#table" data-pick="${TYPES[type].group}" data-cursor="Смотреть">
-        <span class="type-count">${list.length}</span>
-        <span class="type-name">${TYPES[type].plural}</span>
-        <span class="type-shape">${vesselSvg(biggest).svg}</span>
-      </a></li>`;
-  }).join('');
+export function initTypes(host, onPick) {
   host.addEventListener('click', (e) => { const a = e.target.closest('[data-pick]'); if (a) onPick(a.dataset.pick); });
 }
 
 /** Лента всех судов в одном масштабе: на компьютере едет вбок при прокрутке, на телефоне листается пальцем. */
-export function renderStrip(section) {
+export function initStrip(section) {
   const track = $('[data-strip-track]', section);
-  const list = [...FLEET].sort((a, b) => b.length - a.length);
-  track.innerHTML = list.map((v) => `
-    <a class="strip-item ${groupOf(v)}" href="${BASE}flot/${v.slug}/" style="--len:${v.length}" data-cursor="Открыть">
-      <span class="strip-shape">${vesselSvg(v).svg}</span>
-      <span class="strip-name">${esc(v.project)}</span>
-      <span class="strip-meta">${TYPES[v.type].label}, ${fmt.format(v.length)} м</span>
-    </a>`).join('');
   const meter = $('[data-strip-meter]', section);
-  const mm = matchMedia('(min-width: 900px)');
-  if (reduced || !mm.matches) return;
+  if (reduced || !matchMedia('(min-width: 900px)').matches) return;
   const distance = () => track.scrollWidth - innerWidth + 64;
   gsap.to(track, {
     x: () => -distance(), ease: 'none',

@@ -90,6 +90,7 @@ FLEET.forEach((v, i) => {
             ${specs.map(([k, val]) => `<div data-reveal><dt>${k}</dt><dd>${esc(val)}</dd></div>`).join('\n            ')}
           </dl>
         </div>
+        <div class="service-cta"><a class="btn" href="/kontakty/?vessel=${encodeURIComponent(v.project)}#request" data-magnetic>Запросить это судно</a></div>
         <p class="fine">Источник — <a class="link" href="${OFFICIAL}${encodeURI(v.path)}" target="_blank" rel="noopener">страница проекта на omtnp.ru</a>.</p>
       </div>
     </section>

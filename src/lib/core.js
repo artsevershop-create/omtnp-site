@@ -4,7 +4,7 @@ import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import Lenis from 'lenis';
 import logoSvg from '../brand/logo.svg?raw';
-import { CONTACTS, REQUISITES, ROLES } from '../data.js';
+import { REQUISITES, FLEET } from '../data.js';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -142,6 +142,8 @@ function initTransitions(closeMenu) {
 function initCursor() {
   const cursor = $('[data-cursor]');
   if (!finePointer || reduced) { cursor.remove(); return; }
+  // Системный курсор прячем только когда свой уже работает
+  document.documentElement.classList.add('has-cursor');
   const label = $('[data-cursor-label]');
   const x = gsap.quickTo(cursor, 'x', { duration: .35, ease: 'power3' });
   const y = gsap.quickTo(cursor, 'y', { duration: .35, ease: 'power3' });
@@ -249,26 +251,29 @@ export function toast(text) {
 }
 
 function initData() {
-  const tel = (p) => 'tel:' + p.replace(/[^\d+]/g, '');
-  $$('[data-contacts]').forEach((ul) => {
-    ul.innerHTML = CONTACTS.map((c) => `
-      <li data-reveal><span class="ph-title">${c.title}</span>
-        ${c.phones.map((p) => `<a href="${tel(p)}">${p}</a>`).join('')}
-        ${c.email ? `<a href="mailto:${c.email}">${c.email}</a>` : ''}
-        ${c.note ? `<span class="ph-note">${c.note}</span>` : ''}
-      </li>`).join('');
-  });
-  $$('[data-requisites]').forEach((dl) => { dl.innerHTML = REQUISITES.map(([k, v]) => `<div><dt>${k}</dt><dd>${esc(v)}</dd></div>`).join(''); });
-  $$('[data-roles]').forEach((ul) => { ul.innerHTML = ROLES.map((r, i) => `<li data-reveal><span class="role-n">${String(i + 1).padStart(2, '0')}</span>${esc(r)}</li>`).join(''); });
   $$('[data-copy-req]').forEach((b) => b.addEventListener('click', async () => {
     try { await navigator.clipboard.writeText(REQUISITES.map(([k, v]) => `${k}: ${v}`).join('\n')); toast('Реквизиты скопированы'); }
     catch { toast('Не удалось скопировать — выделите реквизиты вручную'); }
   }));
 }
 
+// Ссылки «Заявка» с других страниц: ?cargo=oil|dry|rail выбирает груз, ?vessel=проект — вписывает судно
+const CARGO = { oil: 'Светлые нефтепродукты', dry: 'Сухой груз', rail: 'Перевалка с ж/д на воду' };
+
 function initRequest() {
   const form = $('[data-request]');
   if (!form) return;
+  const params = new URLSearchParams(location.search);
+  const radio = CARGO[params.get('cargo')] && form.querySelector(`input[name="cargo"][value="${CARGO[params.get('cargo')]}"]`);
+  if (radio) radio.checked = true;
+  const vessel = FLEET.find((v) => v.project === params.get('vessel'));
+  if (vessel) form.elements.note.value = `Интересует судно проекта ${vessel.project}`;
+
+  const buildRequest = (d) => [
+    `Груз: ${d.cargo}`, d.from && `Откуда: ${d.from}`, d.to && `Куда: ${d.to}`, d.volume && `Объём: ${d.volume} т`,
+    d.dates && `Сроки: ${d.dates}`, `Компания и контактное лицо: ${d.name}`, `Связь: ${d.contact}`, d.note && `\n${d.note}`,
+  ].filter(Boolean).join('\n');
+
   form.addEventListener('submit', (e) => {
     e.preventDefault();
     const d = Object.fromEntries(new FormData(form));
@@ -283,18 +288,22 @@ function initRequest() {
       return;
     }
     err.hidden = true;
-    const lines = [
-      `Груз: ${d.cargo}`, d.from && `Откуда: ${d.from}`, d.to && `Куда: ${d.to}`, d.volume && `Объём: ${d.volume} т`,
-      d.dates && `Сроки: ${d.dates}`, `Компания и контактное лицо: ${d.name}`, `Связь: ${d.contact}`, d.note && `\n${d.note}`,
-    ].filter(Boolean);
     const subject = `Заявка на перевозку: ${d.cargo}${d.to ? ' → ' + d.to : ''}`;
-    location.href = `mailto:omtnp@omtnp.ru?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(lines.join('\n'))}`;
-    toast('Письмо с заявкой открыто в почтовой программе');
+    location.href = `mailto:omtnp@omtnp.ru?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(buildRequest(d))}`;
+    // У многих не настроена почтовая программа — тогда письмо не откроется, поэтому сразу даём запасной путь
+    $('[data-form-sent]').hidden = false;
+    ScrollTrigger.refresh();
+  });
+
+  $('[data-copy-request]').addEventListener('click', async () => {
+    try { await navigator.clipboard.writeText(buildRequest(Object.fromEntries(new FormData(form)))); toast('Заявка скопирована'); }
+    catch { toast('Не удалось скопировать — напишите нам на omtnp@omtnp.ru'); }
   });
 }
 
 /* ---------- Запуск ---------- */
 export function initCore() {
+  window.__omtReady = true;
   injectLogos();
   initData();
   initLenis();

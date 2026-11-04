@@ -1,14 +1,14 @@
 // Главная: кинематографичный первый экран, фарватер, рейс, лента флота, карта.
 import { $, $$, gsap, ScrollTrigger, reduced, clamp01, splitChars, splitLines } from '../lib/core.js';
 import { initVoyage } from '../scenes/voyage.js';
-import { renderStrip } from '../lib/fleet-ui.js';
+import { initStrip } from '../lib/fleet-ui.js';
 import { initHeroGL } from '../scenes/hero-gl.js';
 
 export default function home() {
   initHero();
   initFairway();
   initVoyage($('[data-voyage]'));
-  renderStrip($('[data-strip]'));
+  initStrip($('[data-strip]'));
   initMap($('.map'));
 }
 

@@ -119,10 +119,17 @@ export function initGeo3d(section) {
   const Z0 = -2;
 
   // Вода
-  const waterMesh = new THREE.Mesh(new THREE.PlaneGeometry(200, 200), new THREE.MeshStandardMaterial({ color: '#4f8ad0', emissive: '#16355f', roughness: .55, metalness: 0 }));
-  waterMesh.rotation.x = -Math.PI / 2;
-  waterMesh.position.y = .06;
-  scene.add(waterMesh);
+  // Вода только под рельефом и на севере, за морем. Южнее и по бокам — суша, край рельефа не должен быть виден.
+  const waterMat = new THREE.MeshStandardMaterial({ color: '#4f8ad0', emissive: '#16355f', roughness: .55, metalness: 0 });
+  const flat = (w, d, z, y, mat) => {
+    const m = new THREE.Mesh(new THREE.PlaneGeometry(w, d), mat);
+    m.rotation.x = -Math.PI / 2;
+    m.position.set(0, y, z);
+    scene.add(m);
+  };
+  flat(89, 99, Z0 - .5, .06, waterMat);
+  flat(600, 300, Z0 - 50 - 150, .06, waterMat);
+  flat(600, 600, Z0 + 248, .02, new THREE.MeshStandardMaterial({ color: '#1c2d4a', roughness: 1, metalness: 0 }));
 
   // Маршрут
   const toV = ([px, py], y = .22) => new THREE.Vector3(toX(px), y, toZ(py) + Z0);
@@ -167,14 +174,15 @@ export function initGeo3d(section) {
   const buildKeys = (portrait) => {
     const s = portrait ? 0 : 1, up = portrait ? 1.7 : 1;
     scene.fog.near = 26 * up;
-    scene.fog.far = 78 * up * (portrait ? 1.3 : 1);
+    scene.fog.far = portrait ? 190 : 78;
     const V = (x, y, z) => new THREE.Vector3(x, y, z);
     KEYS.length = 0;
     KEYS.push(
       { pos: omsk.clone().add(V(-10 * s, 13 * up, 16 * up)), look: omsk.clone().add(V(-5 * s, 0, -6)) },
       { pos: mid.clone().add(V(-14 * s, 15 * up, 15 * up)), look: mid.clone().add(V(-6 * s, 0, -6)) },
       { pos: bay.clone().add(V(-12 * s, 17 * up, 18 * up)), look: bay.clone().add(V(-4 * s, 0, -2)) },
-      { pos: V(-4 * s + 4, 46 * up, 36 * up), look: V(-6 * s + 3, 0, -4) },
+      // На вертикальном экране общий план выше и по центру карты, чтобы вошли и Омск, и Енисей
+      { pos: portrait ? V(0, 96, 62) : V(0, 46, 36), look: portrait ? V(0, 0, -6) : V(-3, 0, -4) },
     );
   };
   buildKeys(canvas.clientWidth < canvas.clientHeight);
@@ -237,11 +245,18 @@ export function initGeo3d(section) {
 
     renderer.render(scene, camera);
     const w = canvas.clientWidth, h = canvas.clientHeight;
+    // Подписи не должны наезжать друг на друга: следующая сдвигается вверх, пока не найдёт место
+    const placed = [];
     marks.forEach(({ v, el }) => {
       tmp.copy(v).project(camera);
       const on = tmp.z < 1 && Math.abs(tmp.x) < 1.1 && Math.abs(tmp.y) < 1.1;
       el.style.opacity = on ? 1 : 0;
-      el.style.transform = `translate(${((tmp.x + 1) / 2) * w}px, ${((1 - tmp.y) / 2) * h}px) translate(-50%, -100%)`;
+      const lw = el.offsetWidth, lh = el.offsetHeight;
+      const lx = ((tmp.x + 1) / 2) * w;
+      let ly = ((1 - tmp.y) / 2) * h;
+      for (let i = 0; on && i < 5 && placed.some((p) => Math.abs(p.x - lx) < (p.w + lw) / 2 + 4 && Math.abs(p.y - ly) < lh + 3); i++) ly -= lh + 4;
+      placed.push({ x: lx, y: ly, w: lw });
+      el.style.transform = `translate(${lx}px, ${ly}px) translate(-50%, -100%)`;
     });
   });
   return true;

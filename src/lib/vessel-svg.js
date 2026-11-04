@@ -69,19 +69,23 @@ export function vesselSvg(v, { dims = false, cls = '' } = {}) {
     parts.push(`<path class="bp-line" d="M${r(cx - W * .62)} ${y0 - 200}V${y0 - 70}M${r(cx - W * .62 - 6)} ${y0 - 70}h12"/>`);
   }
 
-  const pad = dims ? 70 : 6;
-  const vbH = yk + (dims ? 70 : 6);
+  // Подписи чертежа растут вместе с судном, иначе на длинной барже их не прочитать
+  const fs = Math.max(22, W * .034);
+  const draftLabel = `T = ${v.draft} м`;
+  const right = dims ? 34 + fs * .46 * draftLabel.length : 6;
+  const left = dims ? 30 : 3;
+  const vbH = yk + (dims ? 40 + fs * 1.9 : 6);
   const dim = dims ? `
-    <g class="bp-dims">
+    <g class="bp-dims" style="--fs:${r(fs)}px">
       <path class="bp-dim" d="M0 ${yk + 14}V${yk + 44}M${W} ${yk + 14}V${yk + 44}M0 ${yk + 34}H${W}"/>
       <path class="bp-dim" d="M8 ${yk + 29}L0 ${yk + 34}L8 ${yk + 39}M${W - 8} ${yk + 29}L${W} ${yk + 34}L${W - 8} ${yk + 39}"/>
-      <text class="bp-label" x="${W / 2}" y="${yk + 62}" text-anchor="middle">L = ${String(v.length).replace('.', ',')} м</text>
+      <text class="bp-label" x="${W / 2}" y="${r(yk + 38 + fs * 1.75)}" text-anchor="middle">L = ${String(v.length).replace('.', ',')} м</text>
       <path class="bp-dim" d="M${W + 18} ${yw}V${yk}M${W + 12} ${yw}H${W + 24}M${W + 12} ${yk}H${W + 24}"/>
-      <text class="bp-label" x="${W + 30}" y="${(yw + yk) / 2 + 6}">T = ${v.draft} м</text>
+      <text class="bp-label bp-label-t" x="${W + 30}" y="${r((yw + yk) / 2 + fs * .35)}">${draftLabel}</text>
     </g>` : '';
 
-  const svg = `<svg class="vessel ${cls}" viewBox="${-pad / 2} 0 ${r(W + pad * (dims ? 2.4 : 1))} ${r(vbH)}" role="img" aria-label="${TYPES[v.type].label}, проект ${v.project}, длина ${String(v.length).replace('.', ',')} м">
-    ${dims ? `<path class="bp-water" d="M${-pad / 2} ${yw}H${W + pad * 2}"/>` : ''}
+  const svg = `<svg class="vessel ${cls}" viewBox="${-left} 0 ${r(W + left + right)} ${r(vbH)}" role="img" aria-label="${TYPES[v.type].label}, проект ${v.project}, длина ${String(v.length).replace('.', ',')} м">
+    ${dims ? `<path class="bp-water" d="M${-left} ${yw}H${r(W + right)}"/>` : ''}
     ${parts.join('')}
     <path class="bp-hull" d="${hull.join('')}"/>
     ${dim}
