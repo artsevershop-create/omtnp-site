@@ -6,7 +6,8 @@ import { FLEET, TYPES, TYPE_DESC, OFFICIAL } from '../src/data.js';
 import { vesselSvg } from '../src/lib/vessel-svg.js';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
-const fmt = new Intl.NumberFormat('ru-RU', { maximumFractionDigits: 1 });
+// Тот же формат, что в браузере (core.js): разряды с пяти знаков, дробь через запятую
+const fmt = { format(n) { const [i, f] = String(Math.round(n * 10) / 10).split('.'); const g = i.length > 4 ? i.replace(/\B(?=(\d{3})+(?!\d))/g, '\u00a0') : i; return f ? `${g},${f}` : g; } };
 const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]);
 const nb = (s) => esc(s).replace(/ /g, '&nbsp;');
 

@@ -14,7 +14,15 @@ const motionOff = (() => { try { return localStorage.getItem('omt-motion') === '
 export const reduced = motionOff || matchMedia('(prefers-reduced-motion: reduce)').matches;
 if (motionOff) document.documentElement.classList.add('motion-off');
 export const finePointer = matchMedia('(hover: hover) and (pointer: fine)').matches;
-export const fmt = new Intl.NumberFormat('ru-RU', { maximumFractionDigits: 1 });
+// Числа по-русски: разряды через неразрывный пробел с пяти знаков (2008, 1599 — без пробела), дробь через запятую.
+// Свой формат, а не Intl: в части браузеров нет русских данных ICU и получалось «15000».
+export const fmt = {
+  format(n) {
+    const [int, frac] = String(Math.round(n * 10) / 10).split('.');
+    const grouped = int.replace('-', '').length > 4 ? int.replace(/\B(?=(\d{3})+(?!\d))/g, '\u00a0') : int;
+    return frac ? `${grouped},${frac}` : grouped;
+  },
+};
 export const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]);
 export const clamp01 = (n) => Math.min(1, Math.max(0, n));
 export { gsap, ScrollTrigger };
@@ -158,13 +166,27 @@ function initTransitions(closeMenu) {
 
 /* ---------- Курсор и магнитные кнопки ---------- */
 function initCursor() {
-  const cursor = $('[data-cursor]');
+  const cursor = $('.cursor');
   if (!finePointer || reduced) { cursor.remove(); return; }
   // Системный курсор прячем только когда свой уже работает
   document.documentElement.classList.add('has-cursor');
-  const x = gsap.quickTo(cursor, 'x', { duration: .35, ease: 'power3' });
-  const y = gsap.quickTo(cursor, 'y', { duration: .35, ease: 'power3' });
-  addEventListener('pointermove', (e) => { x(e.clientX); y(e.clientY); cursor.classList.add('is-on'); });
+  // Якорь вместо стрелки: идёт за курсором на пружине и раскачивается от скорости, как на тросе
+  // (механика velocity-tilt из 21st.dev unlumen/cursor, перенесена на GSAP)
+  const icon = $('svg', cursor);
+  const x = gsap.quickTo(cursor, 'x', { duration: .28, ease: 'power3' });
+  const y = gsap.quickTo(cursor, 'y', { duration: .28, ease: 'power3' });
+  const tilt = gsap.quickTo(icon, 'rotation', { duration: .6, ease: 'power3' });
+  let lastX = 0, lastT = 0, settle = 0;
+  addEventListener('pointermove', (e) => {
+    x(e.clientX); y(e.clientY);
+    cursor.classList.add('is-on');
+    const dt = Math.max(e.timeStamp - lastT, 8);
+    const vx = (e.clientX - lastX) / dt * 1000;
+    lastX = e.clientX; lastT = e.timeStamp;
+    tilt(Math.max(-32, Math.min(32, -vx * .025)));
+    clearTimeout(settle);
+    settle = setTimeout(() => tilt(0), 90);
+  });
   document.addEventListener('pointerleave', () => cursor.classList.remove('is-on'));
   document.addEventListener('pointerover', (e) => {
     const t = e.target.closest('a, button, [data-cursor], input, textarea, summary, .chip');

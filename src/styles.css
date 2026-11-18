@@ -139,19 +139,35 @@ body.menu-open .top { background: transparent; color: #fff; box-shadow: none; }
 }
 
 /* Hero */
-.hero { position: relative; height: 340vh; background: var(--water); }
+.hero { position: relative; height: 190vh; background: var(--water); }
 .hero-stage { position: sticky; top: 0; height: 100vh; height: 100svh; overflow: hidden; }
 .hero-poster { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
-.hero-shade { position: absolute; inset: 0; background: linear-gradient(180deg, rgba(20, 34, 59, .55) 0%, rgba(20, 34, 59, 0) 28%), linear-gradient(0deg, rgba(20, 34, 59, .82) 0%, rgba(20, 34, 59, .35) 38%, rgba(20, 34, 59, 0) 62%); }
-.hero-copy { position: absolute; left: 0; right: 0; bottom: clamp(96px, 14vh, 150px); }
-.hero-state { position: absolute; left: 0; right: 0; bottom: 0; padding: 0 var(--gutter) 0 calc(var(--gutter) + var(--rail)); max-width: calc(var(--wrap) + var(--rail)); margin: 0 auto; color: #fff; opacity: 0; visibility: hidden; }
-.hero-state.is-on { opacity: 1; visibility: visible; }
-.hero-title { font-size: clamp(2.8rem, min(7.4vw, 11vh), 7.2rem); max-width: 14ch; line-height: .92; text-shadow: 0 2px 30px rgba(10, 20, 36, .35); }
-.hero-lead { margin: 24px 0 0; max-width: 44ch; font-size: clamp(1rem, 1.4vw, 1.2rem); color: rgba(255,255,255,.88); }
-.hero-cta { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 32px; }
-.hero-meter { position: absolute; left: calc(var(--gutter) + var(--rail)); right: var(--gutter); bottom: 36px; display: flex; align-items: center; gap: 18px; color: rgba(255,255,255,.75); font-size: .8125rem; }
-.hero-meter-track { flex: 0 1 260px; height: 2px; background: rgba(255,255,255,.25); position: relative; overflow: hidden; }
-.hero-meter-fill { position: absolute; inset: 0; background: #fff; transform-origin: left; transform: scaleX(0); }
+.hero-media { position: absolute; inset: 0; clip-path: inset(92px 24px 24px 50% round 28px); will-change: clip-path; }
+.hero-shade { position: absolute; inset: 0; background: linear-gradient(0deg, rgba(20, 34, 59, .35) 0%, rgba(20, 34, 59, 0) 30%); pointer-events: none; }
+/* Текст — на тёмном фоне слева, кадр — справа отдельно */
+.hero-inner { position: absolute; inset: 0; display: flex; flex-direction: column; padding-top: clamp(92px, 13vh, 128px); padding-bottom: clamp(24px, 4vh, 40px); color: #fff; will-change: transform, opacity; }
+.hero-inner > * { max-width: min(640px, calc(50vw - var(--gutter) - var(--rail) - 40px)); }
+.hero-rule { padding-bottom: 14px; border-bottom: 1px solid rgba(255, 255, 255, .22); font-size: .875rem; color: rgba(255, 255, 255, .78); }
+.hero-main { margin-top: auto; }
+.hero-title { font-size: clamp(2.6rem, min(4.6vw, 9vh), 5.6rem); line-height: .92; }
+.hero-lead { margin: clamp(16px, 2.6vh, 24px) 0 0; max-width: 44ch; font-size: clamp(1rem, 1.25vw, 1.15rem); color: rgba(255, 255, 255, .86); }
+.hero-cta { display: flex; flex-wrap: wrap; gap: 12px; margin-top: clamp(20px, 3.4vh, 32px); }
+.hero-stats { margin: clamp(24px, 4.5vh, 48px) 0 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); border-top: 1px solid rgba(255, 255, 255, .22); }
+.hero-stats > div { display: flex; flex-direction: column-reverse; justify-content: flex-end; gap: 6px; padding: 14px 16px 0 0; }
+.hero-stats > div + div { padding-left: 16px; border-left: 1px solid rgba(255, 255, 255, .22); }
+.hero-stats dt { font-size: .8125rem; color: rgba(255, 255, 255, .72); }
+.hero-stats dd { margin: 0; font: 600 clamp(1.7rem, 2.8vw, 2.8rem)/1 var(--f-display); font-variant-numeric: tabular-nums; }
+@media (max-width: 899px) {
+  .hero-media { clip-path: inset(58% 16px 16px 16px round 22px); }
+  .hero-inner { padding-top: 92px; padding-bottom: 0; height: auto; bottom: auto; }
+  .hero-inner > * { max-width: none; }
+  .hero-rule, .hero-stats { display: none; }
+  .hero-main { margin: 0; }
+  .hero-title { font-size: clamp(2.1rem, 9.6vw, 3.4rem); }
+  .hero-lead { font-size: .9375rem; margin-top: 12px; }
+  .hero-cta { margin-top: 16px; flex-wrap: nowrap; gap: 8px; }
+  .hero-cta .btn { flex: 1 1 auto; min-height: 48px; padding: 0 14px; font-size: .9375rem; }
+}
 
 /* Услуги */
 .svc-list { list-style: none; margin: 0; padding: 0; border-top: 1.5px solid var(--ink); }

@@ -23,35 +23,34 @@
   </aside>
 
   <main id="main">
-    <!-- Первый экран: живой кадр с танкером (WebGL), заголовки сменяются при прокрутке -->
+    <!-- Первый экран: живой кадр с танкером (WebGL); текст не сменяется, прокрутка приближает камеру -->
     <section class="hero" id="hero" data-hero>
       <div class="hero-stage" data-hero-stage>
-        <img class="hero-poster" src="/media/tanker-still.webp" alt="Нефтеналивной танкер с буксиром идёт по северной реке" data-hero-img />
-        <canvas class="hero-gl" aria-hidden="true" data-hero-gl></canvas>
-        <div class="hero-shade"></div>
+        <!-- Кадр с танкером живёт в своей карточке справа (на телефоне — снизу); текст на него не накладывается.
+             При прокрутке карточка раскрывается на весь экран, текст уходит. -->
+        <div class="hero-media" data-hero-media>
+          <img class="hero-poster" src="/media/tanker-still.webp" alt="Нефтеналивной танкер с буксиром идёт по северной реке" data-hero-img />
+          <canvas class="hero-gl" aria-hidden="true" data-hero-gl></canvas>
+          <div class="hero-shade"></div>
+        </div>
 
-        <div class="hero-copy">
-          <div class="hero-state is-on" data-state="0">
-            <h1 class="display hero-title" data-chars>Светлые нефтепродукты и&nbsp;сухие грузы по&nbsp;рекам Сибири</h1>
-            <p class="hero-lead">АО «Омтранснефтепродукт» — судоходная компания из&nbsp;Омска. С&nbsp;2008 года перевозим грузы собственным флотом.</p>
+        <div class="hero-inner wrap" data-hero-inner>
+          <div class="hero-rule" data-hero-item>
+            <span>АО «Омтранснефтепродукт», Омск</span>
           </div>
-          <div class="hero-state" data-state="1" aria-hidden="true">
-            <p class="display hero-title" data-chars>Обь, Иртыш, Енисей. Обская и&nbsp;Тазовская губы</p>
-            <p class="hero-lead">Внутренние водные пути двух бассейнов — от&nbsp;Омска до&nbsp;северных пунктов.</p>
-          </div>
-          <div class="hero-state" data-state="2" aria-hidden="true">
-            <p class="display hero-title" data-chars>15&nbsp;000+ тонн нефтепродуктов на&nbsp;борту наших судов</p>
-            <p class="hero-lead">Наливные суда вместимостью от&nbsp;250 до&nbsp;2&nbsp;500 тонн и&nbsp;больше. Соберём состав под ваш объём и&nbsp;пункт выгрузки.</p>
-            <div class="hero-cta">
+          <div class="hero-main">
+            <h1 class="display hero-title" data-hero-title>Светлые нефтепродукты и&nbsp;сухие грузы по&nbsp;рекам Сибири</h1>
+            <p class="hero-lead" data-hero-item>Судоходная компания из&nbsp;Омска. С&nbsp;2008 года перевозим грузы собственным флотом по&nbsp;Обь-Иртышскому и&nbsp;Енисейскому бассейнам.</p>
+            <div class="hero-cta" data-hero-item>
               <a class="btn" href="/kontakty/#request" data-magnetic>Рассчитать перевозку</a>
               <a class="btn btn-ghost-light" href="/flot/" data-magnetic>Смотреть флот</a>
             </div>
           </div>
-        </div>
-
-        <div class="hero-meter" aria-hidden="true">
-          <span class="hero-meter-track"><span class="hero-meter-fill" data-hero-meter></span></span>
-          <span class="hero-meter-hint">Прокручивайте — камера подлетит к&nbsp;танкеру</span>
+          <dl class="hero-stats" data-hero-item>
+            <div><dt>год начала работы</dt><dd><span data-hero-count="2008">2008</span></dd></div>
+            <div><dt>тонн принимают на&nbsp;борт наливные суда</dt><dd><span data-hero-count="15000">15&nbsp;000</span>+</dd></div>
+            <div><dt>проектов судов во&nbsp;флоте</dt><dd><span data-hero-count="20">20</span></dd></div>
+          </dl>
         </div>
       </div>
     </section>
@@ -117,17 +116,8 @@
       </div>
     </section>
 
-    <!-- География -->
-    <section class="geo section section-dark" id="geography">
-      <div class="wrap geo-grid">
-        <div class="geo-copy">
-          <h2 class="display h2" data-split>Два бассейна и&nbsp;северные губы</h2>
-          <p class="section-lead">Перевозки идут по&nbsp;внутренним водным путям Обь-Иртышского бассейна, включая пункты Обской и&nbsp;Тазовской губ, и&nbsp;Енисейского бассейна.</p>
-          <a class="btn btn-ghost-light" href="/geografiya/" data-magnetic>Пролететь по&nbsp;маршруту в&nbsp;3D</a>
-        </div>
-        <!-- @map -->
-      </div>
-    </section>
+    <!-- Логистика: карта регионов и рек, этапы перевозки -->
+    <!-- @logistics -->
 
     <!-- Компания -->
     <section class="company section" id="company">

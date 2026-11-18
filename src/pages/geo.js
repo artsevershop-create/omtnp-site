@@ -1,8 +1,10 @@
 // География: 3D-пролёт по маршруту; без WebGL или при «уменьшить движение» — плоская схема.
 import { $, reduced } from '../lib/core.js';
 import { initMap } from './home.js';
+import { initLogimap } from '../scenes/logimap.js';
 
 export default async function geo() {
+  initLogimap($('[data-logi]'));
   const section = $('[data-geo3d]');
   let ok = false;
   if (!reduced) {

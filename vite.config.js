@@ -89,11 +89,15 @@ function site() {
       order: 'pre',
       handler(html, ctx) {
         const nav = (html.match(/<body[^>]*data-nav="([^"]*)"/) || [])[1] || '';
-        const out = html
-          .replace(/<!-- @([\w-]+) -->/g, (_, name) => {
+        let out = html;
+        // Несколько проходов — блок может подключать другой блок (logistics → logimap)
+        for (let pass = 0; pass < 3 && /<!-- @[\w-]+ -->/.test(out); pass++) {
+          out = out.replace(/<!-- @([\w-]+) -->/g, (_, name) => {
             const part = partial(`${name}.html`);
             return name === 'header' ? part.replaceAll(`data-nav-id="${nav}"`, `data-nav-id="${nav}" aria-current="page"`) : part;
-          })
+          });
+        }
+        out = out
           .replace(/<!-- @@(\w+) -->/g, (_, name) => templates[name]())
           .replace('</head>', `  ${seoTags(html, ctx.path)}\n</head>`);
         // Сайт может жить в подпапке (GitHub Pages): внутренние ссылки получают префикс BASE

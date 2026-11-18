@@ -27,11 +27,15 @@
 .curtain-logo .logo .l-disc { fill: rgba(255,255,255,.92); }
 
 /* Курсор */
-.cursor { position: fixed; left: 0; top: 0; z-index: 95; width: 12px; height: 12px; margin: -6px 0 0 -6px; border-radius: 50%; background: var(--buoy); pointer-events: none; opacity: 0; display: grid; place-items: center;
-  transition: width .3s var(--ease), height .3s var(--ease), margin .3s var(--ease), opacity .3s, background .3s, box-shadow .3s; }
+/* Курсор — якорь; точка прицеливания в кольце якоря */
+.cursor { position: fixed; left: 0; top: 0; z-index: 95; width: 30px; height: 34px; margin: -5px 0 0 -15px; pointer-events: none; opacity: 0; transition: opacity .3s; }
 .cursor.is-on { opacity: 1; }
-.cursor.is-link { width: 30px; height: 30px; margin: -15px 0 0 -15px; background: transparent; box-shadow: inset 0 0 0 1.5px var(--buoy); }
-.cursor.is-text { width: 3px; height: 26px; margin: -13px 0 0 -1.5px; border-radius: 2px; }
+.cursor-anchor { width: 100%; height: 100%; overflow: visible; transform-origin: 50% 16%; transition: scale .35s var(--ease); }
+.cursor-anchor .a-halo { stroke: #fff; stroke-width: 4.6; opacity: .9; }
+.cursor-anchor .a-line { stroke: var(--buoy); stroke-width: 2.4; }
+.cursor.is-link .cursor-anchor { scale: 1.3; }
+.cursor.is-link .cursor-anchor .a-line { stroke: var(--buoy-dark); }
+.cursor.is-text { opacity: .35; }
 
 .has-cursor body, .has-cursor a, .has-cursor button, .has-cursor summary, .has-cursor label { cursor: none; }
 .has-cursor input, .has-cursor textarea { cursor: text; }
@@ -318,6 +322,65 @@ a:hover > .roll > span + span, a:focus-visible > .roll > span + span { transform
   .foot-nav a, .foot-contacts a, .crumbs a, .cta-phone, .brand, .mini-specs dt a, .more, .bar-name, .fleet-table th a, .to-top, .motion-toggle, .foot-row a { display: inline-flex; align-items: center; min-height: 44px; min-width: 44px; }
   .foot-nav, .foot-contacts { gap: 0; }
 }
+
+/* ===================== Карта логистики ===================== */
+.logi { padding: clamp(80px, 11vw, 150px) 0; }
+.logi-grid { display: grid; gap: 40px; align-items: start; }
+@media (min-width: 960px) { .logi-grid { grid-template-columns: minmax(0, 1.05fr) minmax(0, .95fr); gap: 64px; } }
+.logi-map { margin: 0; position: sticky; top: 84px; z-index: 2; }
+@media (min-width: 960px) { .logi-map { top: max(84px, calc(50vh - 44vh)); } }
+.logimap { display: block; width: 100%; height: auto; max-height: 82vh; }
+@media (max-width: 959px) {
+  .logi-map { top: 58px; background: var(--water); padding: 6px 0 10px; box-shadow: 0 18px 24px -12px var(--water); }
+  .logimap { max-height: 40svh; width: auto; margin: 0 auto; }
+  .logi-legend { display: none; }
+}
+.logimap .sea { fill: #10203a; }
+.logimap .sea-ripple { opacity: .5; }
+.logimap .ripple-line { fill: none; stroke: #2f4f7c; stroke-width: 1.2; stroke-linecap: round; }
+.logimap.is-live .sea-ripple { animation: ripple-drift 18s linear infinite; }
+@keyframes ripple-drift { to { transform: translate(-46px, 18px); } }
+.logimap .land-far { fill: #172a47; stroke: #22385a; stroke-width: .8; }
+.logimap .reg { fill: #1f3456; stroke: #3e5a83; stroke-width: 1.2; stroke-linejoin: round; transition: fill .6s, stroke .6s; }
+.logimap .reg.is-on { fill: #2b4a76; stroke: #9fb0c6; }
+.logimap .riv { fill: none; stroke-linecap: round; stroke-linejoin: round; }
+.logimap .riv-minor { stroke: #3f6797; stroke-width: 1.3; }
+.logimap .riv-main { stroke: #5d8ac2; stroke-width: 3; }
+.logimap .flow-line { fill: none; stroke: #cfe2f7; stroke-width: 1.6; stroke-linecap: round; stroke-dasharray: 2 16; opacity: .55; }
+.logimap.is-live .flow-line { animation: river-flow 2.4s linear infinite; }
+@keyframes river-flow { to { stroke-dashoffset: -36; } }
+.logimap .route { fill: none; stroke: var(--buoy); stroke-width: 4.5; stroke-linecap: round; stroke-linejoin: round; }
+.logimap .route[data-route="yenisei"] { stroke: #e8a94b; }
+.logimap .lbl { font: 500 17px var(--f-text); fill: rgba(232, 237, 243, .55); transition: fill .5s; paint-order: stroke; stroke: #10203a; stroke-width: 4px; }
+.logimap .lbl.is-on { fill: #fff; }
+.logimap .lbl-water { font: italic 500 18px var(--f-text); fill: #7fa6d4; letter-spacing: .04em; }
+.logimap .lbl-river { font: 600 20px var(--f-display); fill: #9cc2ec; letter-spacing: .06em; }
+.logimap .place circle { fill: #e8edf3; stroke: #10203a; stroke-width: 2; }
+.logimap .place text { font: 500 15px var(--f-text); fill: #e8edf3; paint-order: stroke; stroke: #10203a; stroke-width: 4px; }
+.logimap .place-home circle { fill: var(--buoy); }
+.logimap .place-home text { font-weight: 600; font-size: 18px; }
+.logimap .place-home::before { content: none; }
+.logimap.is-live .place-home circle { animation: home-pulse 2.6s ease-out infinite; transform-box: fill-box; transform-origin: center; }
+@keyframes home-pulse { 0% { stroke: rgba(200,55,45,.6); stroke-width: 2; } 70% { stroke: rgba(200,55,45,0); stroke-width: 26; } 100% { stroke: rgba(200,55,45,0); stroke-width: 26; } }
+.logimap .convoy-barge { fill: #e8edf3; }
+.logimap .convoy-tug { fill: var(--buoy); }
+.logimap .convoy-wake { stroke: #cfe2f7; stroke-width: 2; stroke-linecap: round; opacity: .55; }
+.logi-legend { display: flex; flex-wrap: wrap; gap: 8px 20px; margin-top: 14px; font-size: .8125rem; color: var(--on-dark-soft); }
+.logi-legend span { display: inline-flex; align-items: center; gap: 8px; }
+.logi-legend i { display: inline-block; width: 22px; height: 4px; border-radius: 2px; }
+.logi-legend .lg-route { background: var(--buoy); }
+.logi-legend .lg-river { background: #5d8ac2; }
+.logi-legend .lg-region { height: 12px; width: 16px; background: #2b4a76; box-shadow: inset 0 0 0 1px #9fb0c6; }
+.logi-legend .logi-src { margin-left: auto; opacity: .75; }
+.logi-head .section-lead { margin: 24px 0 8px; }
+.logi-list { list-style: none; margin: 0 0 48px; padding: 0; }
+.logi-step { min-height: 52vh; display: grid; grid-template-columns: 40px minmax(0, 1fr); column-gap: 18px; align-content: center; padding: 24px 0; opacity: .38; transition: opacity .5s var(--ease); }
+.logi-step.is-on { opacity: 1; }
+.logi-step .step-n { grid-row: span 2; width: 36px; height: 36px; border-radius: 50%; display: grid; place-items: center; border: 1.5px solid currentColor; font-weight: 600; }
+.logi-step.is-on .step-n { background: var(--buoy); border-color: var(--buoy); color: #fff; }
+.logi-step .h3 { font: 600 clamp(1.6rem, 2.6vw, 2.3rem)/1.05 var(--f-display); color: #fff; margin: 0 0 10px; }
+.logi-step p { margin: 0; color: var(--on-dark); max-width: 46ch; }
+@media (max-width: 959px) { .logi-step { min-height: 46svh; align-content: start; } .logi-legend { display: none; } }
 
 /* Нижняя панель связи на телефоне */
 .dock { display: none; }

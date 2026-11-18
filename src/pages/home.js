@@ -1,15 +1,16 @@
 // Главная: кинематографичный первый экран, фарватер, рейс, лента флота, карта.
-import { $, $$, gsap, ScrollTrigger, reduced, clamp01, splitChars, splitLines } from '../lib/core.js';
+import { $, $$, gsap, ScrollTrigger, reduced, clamp01, fmt, esc, splitLines } from '../lib/core.js';
 import { initVoyage } from '../scenes/voyage.js';
 import { initStrip } from '../lib/fleet-ui.js';
 import { initHeroGL } from '../scenes/hero-gl.js';
+import { initLogimap } from '../scenes/logimap.js';
 
 export default function home() {
   initHero();
   initFairway();
   initVoyage($('[data-voyage]'));
   initStrip($('[data-strip]'));
-  initMap($('.map'));
+  initLogimap($('[data-logi]'));
   initTicker($('[data-ticker]'));
 }
 
@@ -40,56 +41,76 @@ function initTicker(el) {
 function initHero() {
   const hero = $('[data-hero]');
   const stage = $('[data-hero-stage]');
-  const states = $$('[data-state]');
-  const meter = $('[data-hero-meter]');
-  const chars = states.map((s) => splitChars($('.hero-title', s)));
-  let p = 0, shown = 0;
+  const inner = $('[data-hero-inner]');
+  const media = $('[data-hero-media]');
+  const mobile = matchMedia('(max-width: 899px)');
+  const lerp = (a, b, t) => a + (b - a) * t;
+  let pan = [0, 0];
+  // Карточка с кадром: на компьютере — правая половина, на телефоне — низ экрана; e — насколько раскрыта (0…1)
+  // На телефоне карточка начинается сразу под текстом: меряем, где кончаются кнопки (не выше 40 % экрана)
+  let textBottom = 0;
+  const measure = () => {
+    const main = $('.hero-main', inner);
+    textBottom = main.offsetTop + main.offsetHeight + 18;
+  };
+  const frame = (e) => {
+    const W = stage.clientWidth, H = stage.clientHeight;
+    const [t0, r0, b0, l0, rad0] = mobile.matches ? [Math.max(H * .4, textBottom), 16, 16, 16, 22] : [92, 24, 24, W * .5, 28];
+    const [t, r, b, l, rad] = [lerp(t0, 0, e), lerp(r0, 0, e), lerp(b0, 0, e), lerp(l0, 0, e), lerp(rad0, 0, e)];
+    media.style.clipPath = `inset(${t}px ${r}px ${b}px ${l}px round ${rad}px)`;
+    // Центр видимой карточки — туда же сдвигаем центр кадра в WebGL, чтобы танкер был в карточке, а не за её краем
+    pan = [((l + (W - r)) / 2) / W - .5, ((t + (H - b)) / 2) / H - .5];
+  };
+  measure();
+  frame(0);
+  addEventListener('resize', () => { measure(); frame(clamp01(p / .65)); });
+  document.fonts.ready.then(() => { measure(); frame(clamp01(p / .65)); });
+  const words = splitWords($('[data-hero-title]'));
+  let p = 0;
 
   if (!reduced) {
+    // Один оркестрованный вход: слова заголовка поднимаются из маски (видны с первого кадра), за ними лид, кнопки, цифры
     gsap.timeline({ delay: .1 })
-      .from(chars[0], { yPercent: 45, duration: 1.1, stagger: .014, ease: 'expo.out' })
-      .from([$('.hero-lead', states[0]), '.hero-meter'], { y: 18, duration: 1, stagger: .1, ease: 'power3.out' }, .3)
-      .from('.hero-poster', { scale: 1.12, duration: 2.4, ease: 'expo.out' }, 0);
+      .from('.hero-poster', { scale: 1.1, duration: 2.4, ease: 'expo.out' }, 0)
+      .from(words, { yPercent: 45, duration: 1.2, stagger: .06, ease: 'expo.out' }, 0)
+      .from($$('[data-hero-item]'), { y: 22, duration: 1.1, stagger: .08, ease: 'power3.out' }, .25);
+    $$('[data-hero-count]').forEach((el) => {
+      const end = +el.dataset.heroCount;
+      const year = end > 1900 && end < 2100;
+      const n = { v: year ? end - 18 : 0 };
+      gsap.to(n, { v: end, duration: 1.8, delay: .6, ease: 'expo.out', onUpdate: () => { el.textContent = year ? Math.round(n.v) : fmt.format(Math.round(n.v)); } });
+    });
   }
 
-  const show = (i) => {
-    if (i === shown) return;
-    const prev = states[shown], next = states[i];
-    const back = i < shown;
-    shown = i;
-    states.forEach((s, k) => s.setAttribute('aria-hidden', String(k !== i)));
-    if (reduced) { prev.classList.remove('is-on'); next.classList.add('is-on'); return; }
-    gsap.killTweensOf([...chars[i], ...chars[states.indexOf(prev)], prev, next, ...next.children]);
-    gsap.to(chars[states.indexOf(prev)], { yPercent: back ? 110 : -110, duration: .45, stagger: .006, ease: 'power3.in' });
-    gsap.to([...prev.children].slice(1), { opacity: 0, y: -20, duration: .3, onComplete: () => prev.classList.remove('is-on') });
-    next.classList.add('is-on');
-    gsap.fromTo(chars[i], { yPercent: back ? -110 : 110 }, { yPercent: 0, duration: 1, stagger: .014, delay: .25, ease: 'expo.out' });
-    gsap.fromTo([...next.children].slice(1), { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: .9, stagger: .08, delay: .5, ease: 'expo.out' });
-  };
-
+  // Прокрутка раскрывает карточку с кадром на весь экран; назад — возвращает. Камера тем временем подлетает к танкеру.
   ScrollTrigger.create({
     trigger: hero, start: 'top top', end: 'bottom bottom',
     onUpdate(self) {
       p = self.progress;
-      gsap.set(meter, { scaleX: p });
-      show(p < .3 ? 0 : p < .6 ? 1 : 2);
-      // Финал: кадр сжимается в «карточку» и уступает место следующему разделу
-      if (!reduced) {
-        const k = clamp01((p - .84) / .16);
-        stage.style.clipPath = `inset(${k * 7}% ${k * 5}% ${k * 7}% ${k * 5}% round ${k * 32}px)`;
-        gsap.set('.hero-copy, .hero-meter', { opacity: 1 - k * 1.4 });
-      }
+      if (reduced) return;
+      const e = clamp01(p / .65);
+      frame(e);
+      // Текст уходит раньше, чем карточка дорастёт до него, — они никогда не перекрываются
+      gsap.set(inner, mobile.matches ? { y: -e * 70, opacity: 1 - clamp01(e / .45) } : { x: -e * 90, opacity: 1 - clamp01(e / .5) });
     },
   });
 
   if (reduced) return;
   // Живой кадр на WebGL; без WebGL остаётся картинка с медленным наездом (CSS)
-  const startGL = () => initHeroGL($('[data-hero-gl]'), $('[data-hero-img]'), () => p).then((ok) => {
+  const startGL = () => initHeroGL($('[data-hero-gl]'), $('[data-hero-img]'), () => p, () => pan).then((ok) => {
     if (!ok) stage.classList.add('is-static');
   });
   const idle = window.requestIdleCallback || ((cb) => setTimeout(cb, 1200));
   const later = () => idle(startGL, { timeout: 2500 });
   if (document.readyState === 'complete') later(); else addEventListener('load', later, { once: true });
+}
+
+/** Заголовок по словам: каждое слово в своей маске (механика SeraWordReveal из 21st.dev). */
+function splitWords(el) {
+  const label = el.textContent;
+  el.innerHTML = label.split(' ').map((w) => `<span class="cw" aria-hidden="true"><span class="ch">${esc(w)}</span></span>`).join(' ');
+  el.setAttribute('aria-label', label);
+  return $$('.ch', el);
 }
 
 /* ---------- Фарватер слева ---------- */

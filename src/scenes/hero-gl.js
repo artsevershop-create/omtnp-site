@@ -15,11 +15,11 @@ void main() { gl_Position = vec4(aPos, 0.0, 1.0); }`;
 const FRAG = `
 precision highp float;
 uniform sampler2D uImg, uMask;
-uniform vec2 uRes, uFocus, uShift, uA, uB;
+uniform vec2 uRes, uFocus, uShift, uA, uB, uPan;
 uniform float uImgAspect, uZoom, uTime, uHull;
 
 void main() {
-  vec2 s = vec2(gl_FragCoord.x / uRes.x, 1.0 - gl_FragCoord.y / uRes.y);
+  vec2 s = vec2(gl_FragCoord.x / uRes.x, 1.0 - gl_FragCoord.y / uRes.y) - uPan;
   // «cover»: кадр заполняет экран без искажений
   float ca = uRes.x / uRes.y;
   vec2 hs = ca > uImgAspect ? vec2(0.5, 0.5 * uImgAspect / ca) : vec2(0.5 * ca / uImgAspect, 0.5);
@@ -54,7 +54,8 @@ void main() {
 
   // Блики на воде
   float g = sin(p.x * 230.0 + p.y * 95.0 - t * 2.1) * sin(p.y * 180.0 - t * 1.5 + p.x * 30.0);
-  col += m * pow(max(g, 0.0), 10.0) * 0.18;
+  float patchy = smoothstep(0.55, 0.95, 0.5 + 0.5 * sin(p.x * 9.0 + t * 0.25) * sin(p.y * 7.0 - t * 0.2));
+  col += m * pow(max(g, 0.0), 14.0) * 0.08 * patchy;
 
   // Пена: буруны у носа, полосы вдоль бортов, след за кормой — всё бежит от носа к корме
   float wake = 0.0;
@@ -67,7 +68,7 @@ void main() {
   wake += stern * exp(-abs(across) * 28.0) * pow(0.5 + 0.5 * sin(flow * 0.8 + abs(across) * 90.0), 8.0) * 0.9;
   float bow = exp(-length(q - ab) * 38.0) * (0.6 + 0.4 * sin(t * 9.0 + across * 200.0));
   wake += bow * step(0.0, side + uHull * 0.6);
-  col = mix(col, vec3(0.93, 0.95, 0.97), clamp(wake * m * 0.55, 0.0, 0.6));
+  col = mix(col, vec3(0.93, 0.95, 0.97), clamp(wake * m * 0.4, 0.0, 0.45));
   // Мягкая виньетка
   vec2 v = s - 0.5;
   col *= 1.0 - dot(v, v) * 0.35;
@@ -121,7 +122,7 @@ function texture(gl, source, unit) {
 }
 
 /** getProgress — прогресс прокрутки первого экрана (0…1). Возвращает false, если WebGL недоступен. */
-export async function initHeroGL(canvas, img, getProgress) {
+export async function initHeroGL(canvas, img, getProgress, getPan = () => [0, 0]) {
   const gl = canvas.getContext('webgl', { antialias: false, premultipliedAlpha: false });
   if (!gl) return false;
   // Ждём картинку опросом: событие load могло пройти раньше, чем сюда дошёл код
@@ -155,7 +156,7 @@ export async function initHeroGL(canvas, img, getProgress) {
   gl.uniform2f(u('uA'), TANKER.from[0] / IMG_W, TANKER.from[1] / IMG_H);
   gl.uniform2f(u('uB'), TANKER.to[0] / IMG_W, TANKER.to[1] / IMG_H);
   gl.uniform1f(u('uHull'), TANKER.hull / IMG_H);
-  const uRes = u('uRes'), uZoom = u('uZoom'), uTime = u('uTime'), uShift = u('uShift');
+  const uRes = u('uRes'), uZoom = u('uZoom'), uTime = u('uTime'), uShift = u('uShift'), uPan = u('uPan');
 
   const resize = () => {
     // Кадр мягкий по природе (рябь, дымка) — хватает 1,25× пикселей, на слабых телефонах это втрое легче
@@ -190,6 +191,8 @@ export async function initHeroGL(canvas, img, getProgress) {
     gl.uniform1f(uZoom, zoom);
     gl.uniform1f(uTime, time);
     gl.uniform2f(uShift, sx, sy);
+    const [px, py] = getPan();
+    gl.uniform2f(uPan, px, py);
     gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
   });
   canvas.classList.add('is-ready');
