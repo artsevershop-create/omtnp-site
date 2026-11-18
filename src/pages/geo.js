@@ -7,6 +7,8 @@ export default async function geo() {
   let ok = false;
   if (!reduced) {
     const { initGeo3d } = await import('../scenes/geo3d.js');
+    // 3D запускаем, когда страница уже отрисована и поток свободен
+    await new Promise((r) => (window.requestIdleCallback || ((cb) => setTimeout(cb, 600)))(r, { timeout: 1500 }));
     ok = initGeo3d(section);
   }
   if (!ok) {

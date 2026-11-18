@@ -10,6 +10,30 @@ export default function home() {
   initVoyage($('[data-voyage]'));
   initStrip($('[data-strip]'));
   initMap($('.map'));
+  initTicker($('[data-ticker]'));
+}
+
+/* ---------- Бегущая строка: базовый ход + ускорение и смена направления от прокрутки ---------- */
+function initTicker(el) {
+  if (!el || reduced) return;
+  const track = $('[data-ticker-track]', el);
+  track.innerHTML += track.innerHTML; // две копии — бесконечная лента
+  let x = 0, dir = -1, boost = 0, visible = false;
+  new IntersectionObserver(([e]) => { visible = e.isIntersecting; }).observe(el);
+  ScrollTrigger.create({ trigger: el, start: 'top bottom', end: 'bottom top', onUpdate: (self) => {
+    const v = self.getVelocity();
+    if (Math.abs(v) > 20) dir = v > 0 ? -1 : 1;
+    boost = Math.min(Math.abs(v) / 120, 14);
+  } });
+  gsap.ticker.add((_, dt) => {
+    if (!visible) return;
+    boost *= .94;
+    x += dir * (0.6 + boost) * (dt / 16.7);
+    const half = track.scrollWidth / 2;
+    if (x <= -half) x += half;
+    if (x > 0) x -= half;
+    track.style.transform = `translate3d(${x}px, 0, 0)`;
+  });
 }
 
 /* ---------- Первый экран: живой кадр с танкером, заголовки собираются по буквам ---------- */
@@ -22,9 +46,9 @@ function initHero() {
   let p = 0, shown = 0;
 
   if (!reduced) {
-    gsap.timeline({ delay: .7 })
-      .from(chars[0], { yPercent: 110, duration: 1.2, stagger: .018, ease: 'expo.out' })
-      .from([$('.hero-lead', states[0]), '.hero-meter'], { y: 24, opacity: 0, duration: 1, stagger: .1, ease: 'power3.out' }, .5)
+    gsap.timeline({ delay: .1 })
+      .from(chars[0], { yPercent: 45, duration: 1.1, stagger: .014, ease: 'expo.out' })
+      .from([$('.hero-lead', states[0]), '.hero-meter'], { y: 18, duration: 1, stagger: .1, ease: 'power3.out' }, .3)
       .from('.hero-poster', { scale: 1.12, duration: 2.4, ease: 'expo.out' }, 0);
   }
 
@@ -60,9 +84,12 @@ function initHero() {
 
   if (reduced) return;
   // Живой кадр на WebGL; без WebGL остаётся картинка с медленным наездом (CSS)
-  initHeroGL($('[data-hero-gl]'), $('[data-hero-img]'), () => p).then((ok) => {
+  const startGL = () => initHeroGL($('[data-hero-gl]'), $('[data-hero-img]'), () => p).then((ok) => {
     if (!ok) stage.classList.add('is-static');
   });
+  const idle = window.requestIdleCallback || ((cb) => setTimeout(cb, 1200));
+  const later = () => idle(startGL, { timeout: 2500 });
+  if (document.readyState === 'complete') later(); else addEventListener('load', later, { once: true });
 }
 
 /* ---------- Фарватер слева ---------- */

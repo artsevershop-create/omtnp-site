@@ -158,7 +158,8 @@ export async function initHeroGL(canvas, img, getProgress) {
   const uRes = u('uRes'), uZoom = u('uZoom'), uTime = u('uTime'), uShift = u('uShift');
 
   const resize = () => {
-    const dpr = Math.min(devicePixelRatio || 1, 2);
+    // Кадр мягкий по природе (рябь, дымка) — хватает 1,25× пикселей, на слабых телефонах это втрое легче
+    const dpr = Math.min(devicePixelRatio || 1, 1.25);
     canvas.width = Math.round(canvas.clientWidth * dpr);
     canvas.height = Math.round(canvas.clientHeight * dpr);
     gl.viewport(0, 0, canvas.width, canvas.height);
@@ -175,8 +176,11 @@ export async function initHeroGL(canvas, img, getProgress) {
   let visible = true;
   new IntersectionObserver(([e]) => { visible = e.isIntersecting; }).observe(canvas);
 
+  let lastDraw = 0;
   gsap.ticker.add((time, dt) => {
-    if (!visible) return;
+    if (!visible || time - lastDraw < 1 / 31) return;
+    dt = (time - lastDraw) * 1000;
+    lastDraw = time;
     const k = 1 - Math.exp(-(dt / 1000) * 3);
     // Медленный «дыхательный» наезд + приближение при прокрутке
     const target = 1.05 + (1 - Math.cos(time * .12)) * .04 + getProgress() * .35;

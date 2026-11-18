@@ -70,6 +70,7 @@ FLEET.forEach((v, i) => {
     <section class="blueprint-wrap section-dark" aria-label="Чертёж судна">
       <div class="wrap">
         <div class="blueprint-frame" data-blueprint>
+          <div class="flap" aria-hidden="true" data-flap="${esc(v.project.split(' / ')[0])}"></div>
           ${svg}
         </div>
         <p class="blueprint-note">Схема по основным размерам. Высота корпуса показана с увеличением для наглядности.</p>

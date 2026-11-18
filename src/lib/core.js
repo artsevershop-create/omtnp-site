@@ -10,7 +10,9 @@ gsap.registerPlugin(ScrollTrigger);
 
 export const $ = (s, root = document) => root.querySelector(s);
 export const $$ = (s, root = document) => [...root.querySelectorAll(s)];
-export const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const motionOff = (() => { try { return localStorage.getItem('omt-motion') === 'off'; } catch { return false; } })();
+export const reduced = motionOff || matchMedia('(prefers-reduced-motion: reduce)').matches;
+if (motionOff) document.documentElement.classList.add('motion-off');
 export const finePointer = matchMedia('(hover: hover) and (pointer: fine)').matches;
 export const fmt = new Intl.NumberFormat('ru-RU', { maximumFractionDigits: 1 });
 export const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]);
@@ -76,10 +78,25 @@ export function scrollToTarget(target) {
 function initHeader() {
   const top = $('[data-top]');
   const darks = () => $$('.section-dark, .hero, .careers-hero');
-  const update = () => {
+  const bar = $('[data-progress]');
+  const dock = $('[data-dock]');
+  let lastY = scrollY;
+  const update = (self) => {
     const hero = $('[data-hero]');
-    top.classList.toggle('is-solid', scrollY > (hero ? hero.offsetHeight - 80 : 40));
+    const y = scrollY;
+    top.classList.toggle('is-solid', y > (hero ? hero.offsetHeight - 80 : 40));
     top.classList.toggle('on-dark', darks().some((s) => { const r = s.getBoundingClientRect(); return r.top < 40 && r.bottom > 40; }));
+    // Вниз больше чем на 8 px — прячем, вверх — показываем; у самого верха шапка всегда видна
+    if (Math.abs(y - lastY) > 8) {
+      top.classList.toggle('is-away', y > lastY && y > 320 && !document.body.classList.contains('menu-open'));
+      lastY = y;
+    }
+    if (bar && self) gsap.set(bar, { scaleX: self.progress });
+    // Нижняя панель на телефоне — после первого экрана и не поверх подвала
+    if (dock) {
+      const foot = $('.cta-band');
+      dock.classList.toggle('is-on', y > innerHeight * .8 && (!foot || foot.getBoundingClientRect().top > innerHeight));
+    }
   };
   ScrollTrigger.create({ start: 0, end: 'max', onUpdate: update, onRefresh: update });
   update();
@@ -106,7 +123,7 @@ function initMenu() {
 function initTransitions(closeMenu) {
   const curtain = $('[data-curtain]');
   const reveal = () => {
-    if (reduced) { curtain.classList.add('is-off'); return; }
+    if (reduced || !document.documentElement.classList.contains('curtain-in')) { gsap.set(curtain, { yPercent: 100 }); curtain.classList.add('is-off'); return; }
     gsap.timeline()
       .to('.curtain-logo', { opacity: 0, y: -20, duration: .35, ease: 'power2.in' })
       .to(curtain, { yPercent: -100, duration: .9, ease: 'expo.inOut', onComplete: () => curtain.classList.add('is-off') }, '-=.1');
@@ -132,6 +149,7 @@ function initTransitions(closeMenu) {
     if (reduced) return;
     e.preventDefault();
     curtain.classList.remove('is-off');
+    try { sessionStorage.setItem('omt-curtain', '1'); } catch {}
     gsap.timeline({ onComplete: () => { location.href = url.href; } })
       .fromTo(curtain, { yPercent: 100 }, { yPercent: 0, duration: .7, ease: 'expo.inOut' })
       .fromTo('.curtain-logo', { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: .3 }, '-=.25');
@@ -144,18 +162,46 @@ function initCursor() {
   if (!finePointer || reduced) { cursor.remove(); return; }
   // Системный курсор прячем только когда свой уже работает
   document.documentElement.classList.add('has-cursor');
-  const label = $('[data-cursor-label]');
   const x = gsap.quickTo(cursor, 'x', { duration: .35, ease: 'power3' });
   const y = gsap.quickTo(cursor, 'y', { duration: .35, ease: 'power3' });
   addEventListener('pointermove', (e) => { x(e.clientX); y(e.clientY); cursor.classList.add('is-on'); });
   document.addEventListener('pointerleave', () => cursor.classList.remove('is-on'));
   document.addEventListener('pointerover', (e) => {
     const t = e.target.closest('a, button, [data-cursor], input, textarea, summary, .chip');
-    const text = t?.closest('[data-cursor]')?.dataset.cursor || '';
     cursor.classList.toggle('is-link', !!t && !t.matches('input, textarea'));
     cursor.classList.toggle('is-text', !!t && t.matches('input, textarea'));
-    cursor.classList.toggle('has-label', !!text);
-    label.textContent = text;
+  });
+}
+
+function initRoll() {
+  $$('.nav a, .foot-nav a').forEach((a) => {
+    const t = a.textContent;
+    a.setAttribute('aria-label', t);
+    a.innerHTML = `<span class="roll" aria-hidden="true"><span>${esc(t)}</span><span>${esc(t)}</span></span>`;
+  });
+}
+
+/** Мягкий свет за курсором на карточках (механика spotlight-pointer из 21st.dev). */
+function initSpotlight() {
+  if (!finePointer || reduced) return;
+  $$('.type-card, .vnav-card, .phone-grid li').forEach((card) => {
+    card.classList.add('has-spot');
+    card.addEventListener('pointermove', (e) => {
+      const r = card.getBoundingClientRect();
+      card.style.setProperty('--mx', `${e.clientX - r.left}px`);
+      card.style.setProperty('--my', `${e.clientY - r.top}px`);
+    });
+  });
+}
+
+function initMotionToggle() {
+  const b = $('[data-motion-toggle]');
+  if (!b) return;
+  b.textContent = motionOff ? 'Включить анимацию' : 'Остановить анимацию';
+  b.setAttribute('aria-pressed', String(motionOff));
+  b.addEventListener('click', () => {
+    try { localStorage.setItem('omt-motion', motionOff ? 'on' : 'off'); } catch {}
+    location.reload();
   });
 }
 
@@ -178,7 +224,9 @@ function initReveals() {
   if (reduced) return;
   $$('[data-split]').forEach((el) => {
     const lines = splitLines(el);
-    gsap.from(lines, { yPercent: 110, rotate: 2, duration: 1.15, stagger: .09, ease: 'expo.out', scrollTrigger: { trigger: el, start: 'top 88%' } });
+    // Главный заголовок страницы виден с первого кадра (иначе поисковик и посетитель ждут скрипт) — строки только приподнимаются
+    if (el.tagName === 'H1') gsap.from(lines, { yPercent: 45, duration: 1.1, stagger: .08, ease: 'expo.out', delay: .1 });
+    else gsap.from(lines, { yPercent: 110, rotate: 2, duration: 1.15, stagger: .09, ease: 'expo.out', scrollTrigger: { trigger: el, start: 'top 88%' } });
   });
   $$('[data-reveal]').forEach((el) => {
     gsap.from(el, { y: 40, opacity: 0, duration: 1, ease: 'power3.out', scrollTrigger: { trigger: el, start: 'top 90%' } });
@@ -195,12 +243,23 @@ function initReveals() {
       onUpdate: () => { el.textContent = year ? Math.round(n.v) : fmt.format(Math.round(n.v)); },
     });
   });
+  // Фото первого экрана раскрывается шторкой снизу (страница «Работа на флоте»)
+  const media = $('.careers-media');
+  if (media) {
+    gsap.fromTo(media, { clipPath: 'inset(100% 0% 0% 0%)' }, { clipPath: 'inset(0% 0% 0% 0%)', duration: 1.4, ease: 'power4.inOut', delay: .5 });
+    gsap.from($('img', media), { scale: 1.25, duration: 1.8, ease: 'power3.out', delay: .5 });
+  }
   $$('[data-parallax]').forEach((img) => {
     gsap.fromTo(img, { yPercent: -10 }, { yPercent: 6, ease: 'none', scrollTrigger: { trigger: img.parentElement, start: 'top bottom', end: 'bottom top', scrub: true } });
   });
   const word = $('[data-foot-word]');
   // Название целиком в ширину страницы — поднимается снизу, когда подвал появляется
-  if (word) gsap.from(word, { yPercent: 60, opacity: 0, duration: 1.4, ease: 'expo.out', scrollTrigger: { trigger: word, start: 'top 95%' } });
+  if (word) {
+    const text = $('text', word);
+    gsap.timeline({ scrollTrigger: { trigger: word, start: 'top 92%' } })
+      .fromTo(text, { strokeDashoffset: 2600 }, { strokeDashoffset: 0, duration: 2.6, ease: 'power2.inOut' })
+      .fromTo(text, { fillOpacity: 0 }, { fillOpacity: 1, duration: 1.2, ease: 'power1.out' }, '-=.9');
+  }
   $$('.company-logo').forEach((el) => logoIntro(el, { scrollTrigger: { trigger: el, start: 'top 85%' } }));
   const foot = $('.foot-logo');
   if (foot) logoIntro(foot, { scrollTrigger: { trigger: foot, start: 'top 95%' } });
@@ -314,6 +373,9 @@ export function initCore() {
   initMagnetic();
   initRequest();
   initWater();
+  initRoll();
+  initSpotlight();
+  initMotionToggle();
   // Переход по ссылке с якорем с другой страницы
   if (location.hash) {
     const t = document.getElementById(decodeURIComponent(location.hash.slice(1)));

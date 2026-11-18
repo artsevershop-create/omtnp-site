@@ -9,6 +9,8 @@ const partial = (name) => readFileSync(resolve(root, 'partials', name), 'utf8');
 const BASE = process.env.BASE_PATH || '/';
 // Адрес сайта для canonical, превью в соцсетях и sitemap. При переезде на свой домен — задать SITE_URL.
 const SITE = (process.env.SITE_URL || 'https://artsevershop-create.github.io/omtnp-site').replace(/\/$/, '');
+// Пока сайт на тестовом адресе (GitHub Pages), поисковикам его не показываем: SITE_INDEX=1 — только для боевого домена
+const INDEX = process.env.SITE_INDEX === '1';
 const SKIP = ['node_modules', 'dist', 'public', 'partials', 'src', 'scripts', 'design', '.git'];
 
 // Все страницы сайта: index.html в корне и в подпапках
@@ -40,13 +42,18 @@ const ORGANIZATION = {
 };
 
 /** Canonical, Open Graph и разметка организации — из заголовка и описания самой страницы. */
+const ld = (obj) => `<script type="application/ld+json">${JSON.stringify(obj).replace(/</g, '\\u003c')}</script>`;
+
 function seoTags(html, path) {
+  const tagsHead = [];
   const attr = (s) => s.replace(/&/g, '&amp;').replace(/"/g, '&quot;');
   const title = (html.match(/<title>([^<]*)<\/title>/) || [])[1] || '';
   const desc = (html.match(/<meta name="description" content="([^"]*)"/) || [])[1] || '';
-  if (path === '/404.html') return '<meta name="robots" content="noindex" />';
+  if (path === '/404.html' || !INDEX) tagsHead.push('<meta name="robots" content="noindex, nofollow" />');
+  if (path === '/404.html') return tagsHead.join('\n  ');
   const url = SITE + path.replace(/index\.html$/, '');
   const tags = [
+    ...tagsHead,
     `<link rel="canonical" href="${url}" />`,
     '<meta property="og:type" content="website" />',
     '<meta property="og:locale" content="ru_RU" />',
@@ -59,8 +66,16 @@ function seoTags(html, path) {
     '<meta property="og:image:height" content="630" />',
     '<meta name="twitter:card" content="summary_large_image" />',
   ];
-  if (path === '/index.html' || path === '/kontakty/index.html') {
-    tags.push(`<script type="application/ld+json">${JSON.stringify(ORGANIZATION)}</script>`);
+  if (path === '/index.html' || path === '/kontakty/index.html') tags.push(ld(ORGANIZATION));
+  if (path === '/index.html') tags.push(ld({ '@context': 'https://schema.org', '@type': 'WebSite', name: 'АО «Омтранснефтепродукт»', url: `${SITE}/`, inLanguage: 'ru' }));
+  // Хлебные крошки на страницах судов: Флот → проект
+  const vessel = path.match(/^\/flot\/([^/]+)\/index\.html$/);
+  if (vessel) {
+    tags.push(ld({ '@context': 'https://schema.org', '@type': 'BreadcrumbList', itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Главная', item: `${SITE}/` },
+      { '@type': 'ListItem', position: 2, name: 'Флот', item: `${SITE}/flot/` },
+      { '@type': 'ListItem', position: 3, name: title.split(' — ')[0], item: url },
+    ] }));
   }
   return tags.join('\n  ');
 }
@@ -89,7 +104,7 @@ function site() {
     generateBundle() {
       const urls = Object.keys(pages()).map((key) => `  <url><loc>${pageUrl(key)}</loc></url>`).join('\n');
       this.emitFile({ type: 'asset', fileName: 'sitemap.xml', source: `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urls}\n</urlset>\n` });
-      this.emitFile({ type: 'asset', fileName: 'robots.txt', source: `User-agent: *\nAllow: /\n\nSitemap: ${SITE}/sitemap.xml\n` });
+      this.emitFile({ type: 'asset', fileName: 'robots.txt', source: INDEX ? `User-agent: *\nAllow: /\n\nSitemap: ${SITE}/sitemap.xml\n` : 'User-agent: *\nDisallow: /\n' });
     },
     handleHotUpdate({ file, server }) {
       if (file.replace(/\\/g, '/').includes('/partials/')) server.ws.send({ type: 'full-reload' });

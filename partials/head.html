@@ -4,6 +4,9 @@
   <link rel="icon" href="/brand/favicon.svg" type="image/svg+xml" />
   <script>
     // Шторка и свой курсор включаются только вместе с JS; если скрипт не загрузился за 4 с — страница просто открывается
-    document.documentElement.classList.add('js');
-    setTimeout(function () { if (!window.__omtReady) document.documentElement.classList.remove('js'); }, 4000);
+    // Шторка закрывает страницу при загрузке только после перехода внутри сайта — прямой заход видит контент сразу
+    var h = document.documentElement;
+    h.classList.add('js');
+    try { if (sessionStorage.getItem('omt-curtain')) { h.classList.add('curtain-in'); sessionStorage.removeItem('omt-curtain'); } } catch (e) {}
+    setTimeout(function () { if (!window.__omtReady) h.classList.remove('js', 'curtain-in'); }, 4000);
   </script>
