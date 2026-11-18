@@ -10,6 +10,8 @@ const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const fmt = { format(n) { const [i, f] = String(Math.round(n * 10) / 10).split('.'); const g = i.length > 4 ? i.replace(/\B(?=(\d{3})+(?!\d))/g, '\u00a0') : i; return f ? `${g},${f}` : g; } };
 const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]);
 const nb = (s) => esc(s).replace(/ /g, '&nbsp;');
+// Фото той же серии судов (Викисклад) — только там, где проект на снимке точно совпадает
+const PHOTO_OF = { 911: 'tug-911' };
 
 // Убираем старые сгенерированные страницы (папки с index.html внутри flot/)
 const flotDir = resolve(root, 'flot');
@@ -77,7 +79,14 @@ FLEET.forEach((v, i) => {
         <p class="blueprint-note">Схема по основным размерам. Высота корпуса показана с увеличением для наглядности.</p>
       </div>
     </section>
-
+${PHOTO_OF[v.slug] ? `
+    <section class="section-tight vessel-photo">
+      <div class="wrap">
+        <!-- @@photo(${PHOTO_OF[v.slug]},wide) -->
+        <p class="fine">Суда этого проекта на&nbsp;Оби. На&nbsp;снимке не&nbsp;судно компании, а&nbsp;толкач той&nbsp;же серии.</p>
+      </div>
+    </section>
+` : ''}
     <section class="section vessel-specs">
       <div class="wrap">
         <dl class="kpis">

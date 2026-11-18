@@ -90,3 +90,17 @@ export function requisites() {
 export function roles() {
   return ROLES.map((r, i) => `<li data-reveal><span class="role-n">${String(i + 1).padStart(2, '0')}</span>${esc(r)}</li>`).join('');
 }
+
+// Фото со Викисклада с обязательной подписью: автор и лицензия (условие CC BY / BY-SA).
+// <!-- @@photo(id,вариант) --> — вариант задаёт пропорции: step, half, wide, band.
+import { PHOTOS } from '../photos.js';
+export function photo(id, variant = 'half') {
+  const p = PHOTOS[id];
+  if (!p) throw new Error(`Нет фото ${id}`);
+  const lic = p.licenseUrl ? `<a href="${p.licenseUrl}" rel="license noopener" target="_blank">${p.license}</a>` : p.license;
+  return `<figure class="photo photo-${variant}" data-photo>
+      <div class="photo-frame"><img src="/media/photos/${id}.webp" width="${p.w}" height="${p.h}" alt="${esc(p.caption)}" loading="lazy" decoding="async" /></div>
+      <figcaption><span class="photo-cap">${esc(p.caption)}${p.place ? `, ${esc(p.place)}` : ''}</span>
+        <span class="photo-credit">Фото: <a href="${p.page}" rel="noopener" target="_blank">${esc(p.author)}</a>, ${lic}, Викисклад</span></figcaption>
+    </figure>`;
+}

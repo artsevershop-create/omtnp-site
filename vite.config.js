@@ -98,7 +98,7 @@ function site() {
           });
         }
         out = out
-          .replace(/<!-- @@(\w+) -->/g, (_, name) => templates[name]())
+          .replace(/<!-- @@(\w+)(?:\(([^)]*)\))? -->/g, (_, name, args) => templates[name](...(args ? args.split(',').map((a) => a.trim()) : [])))
           .replace('</head>', `  ${seoTags(html, ctx.path)}\n</head>`);
         // Сайт может жить в подпапке (GitHub Pages): внутренние ссылки получают префикс BASE
         // (картинки и <link> Vite переписывает сам — трогаем только ссылки <a>)

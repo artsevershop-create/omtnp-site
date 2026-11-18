@@ -243,6 +243,11 @@ function initMagnetic() {
 
 /* ---------- Появление при прокрутке ---------- */
 function initReveals() {
+  // Фото раскрываются шторкой, когда доходят до экрана (CSS-переход; без анимации CSS сразу показывает кадр)
+  const photoIO = new IntersectionObserver((list) => list.forEach((e) => {
+    if (e.isIntersecting) { e.target.classList.add('is-in'); photoIO.unobserve(e.target); }
+  }), { rootMargin: '0px 0px -12% 0px' });
+  $$('[data-photo]').forEach((el) => photoIO.observe(el));
   if (reduced) return;
   $$('[data-split]').forEach((el) => {
     const lines = splitLines(el);
