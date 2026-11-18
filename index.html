@@ -23,34 +23,27 @@
   </aside>
 
   <main id="main">
-    <!-- Первый экран: живой кадр с танкером (WebGL); текст не сменяется, прокрутка приближает камеру -->
+    <!-- Первый экран, концепция «Река»: заголовок на синем, под ним широкий живой кадр (WebGL) и строка маршрута.
+         Текст и кадр не пересекаются; при прокрутке кадр раздвигается до краёв, камера подлетает к танкеру. -->
     <section class="hero" id="hero" data-hero>
-      <div class="hero-stage" data-hero-stage>
-        <!-- Кадр с танкером живёт в своей карточке справа (на телефоне — снизу); текст на него не накладывается.
-             При прокрутке карточка раскрывается на весь экран, текст уходит. -->
-        <div class="hero-media" data-hero-media>
-          <img class="hero-poster" src="/media/tanker-still.webp" alt="Нефтеналивной танкер с буксиром идёт по северной реке" data-hero-img />
-          <canvas class="hero-gl" aria-hidden="true" data-hero-gl></canvas>
-          <div class="hero-shade"></div>
+      <div class="hero-inner wrap" data-hero-inner>
+        <h1 class="display hero-title" data-hero-title>Светлые нефтепродукты и&nbsp;сухие грузы по&nbsp;рекам Сибири</h1>
+        <div class="hero-side">
+          <p class="hero-lead" data-hero-item>Судоходная компания из&nbsp;Омска. С&nbsp;2008 года перевозим грузы собственным флотом по&nbsp;Обь-Иртышскому и&nbsp;Енисейскому бассейнам.</p>
+          <div class="hero-cta" data-hero-item>
+            <a class="btn" href="/kontakty/#request" data-magnetic>Рассчитать перевозку</a>
+            <a class="btn btn-ghost-light" href="/flot/" data-magnetic>Смотреть флот</a>
+          </div>
         </div>
-
-        <div class="hero-inner wrap" data-hero-inner>
-          <div class="hero-rule" data-hero-item>
-            <span>АО «Омтранснефтепродукт», Омск</span>
-          </div>
-          <div class="hero-main">
-            <h1 class="display hero-title" data-hero-title>Светлые нефтепродукты и&nbsp;сухие грузы по&nbsp;рекам Сибири</h1>
-            <p class="hero-lead" data-hero-item>Судоходная компания из&nbsp;Омска. С&nbsp;2008 года перевозим грузы собственным флотом по&nbsp;Обь-Иртышскому и&nbsp;Енисейскому бассейнам.</p>
-            <div class="hero-cta" data-hero-item>
-              <a class="btn" href="/kontakty/#request" data-magnetic>Рассчитать перевозку</a>
-              <a class="btn btn-ghost-light" href="/flot/" data-magnetic>Смотреть флот</a>
-            </div>
-          </div>
-          <dl class="hero-stats" data-hero-item>
-            <div><dt>год начала работы</dt><dd><span data-hero-count="2008">2008</span></dd></div>
-            <div><dt>тонн принимают на&nbsp;борт наливные суда</dt><dd><span data-hero-count="15000">15&nbsp;000</span>+</dd></div>
-            <div><dt>проектов судов во&nbsp;флоте</dt><dd><span data-hero-count="20">20</span></dd></div>
-          </dl>
+      </div>
+      <div class="hero-film" data-hero-media>
+        <img class="hero-poster" src="/media/tanker-still.webp" alt="Нефтеналивной танкер с буксиром идёт по северной реке" data-hero-img fetchpriority="high" />
+        <canvas class="hero-gl" aria-hidden="true" data-hero-gl></canvas>
+        <span class="hero-badge">Визуализация</span>
+      </div>
+      <div class="hero-route" aria-label="Маршрут: Омск, Тобольск, Ханты-Мансийск, Сургут, Салехард, Обская и Тазовская губы; Енисей" data-ticker>
+        <div class="ticker-track" data-ticker-track aria-hidden="true">
+          <span>Омск</span><i></i><span>Тобольск</span><i></i><span>Ханты-Мансийск</span><i></i><span>Сургут</span><i></i><span>Салехард</span><i></i><span>Обская губа</span><i></i><span>Тазовская губа</span><i></i><span>Енисей</span><i></i>
         </div>
       </div>
     </section>

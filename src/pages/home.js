@@ -11,7 +11,7 @@ export default function home() {
   initVoyage($('[data-voyage]'));
   initStrip($('[data-strip]'));
   initLogimap($('[data-logi]'));
-  initTicker($('[data-ticker]'));
+  $('[data-ticker]').forEach(initTicker);
 }
 
 /* ---------- Бегущая строка: базовый ход + ускорение и смена направления от прокрутки ---------- */
@@ -40,65 +40,43 @@ function initTicker(el) {
 /* ---------- Первый экран: живой кадр с танкером, заголовки собираются по буквам ---------- */
 function initHero() {
   const hero = $('[data-hero]');
-  const stage = $('[data-hero-stage]');
+  const film = $('[data-hero-media]');
   const inner = $('[data-hero-inner]');
-  const media = $('[data-hero-media]');
   const mobile = matchMedia('(max-width: 899px)');
-  const lerp = (a, b, t) => a + (b - a) * t;
-  let pan = [0, 0];
-  // Карточка с кадром: на компьютере — правая половина, на телефоне — низ экрана; e — насколько раскрыта (0…1)
-  // На телефоне карточка начинается сразу под текстом: меряем, где кончаются кнопки (не выше 40 % экрана)
-  let textBottom = 0;
-  const measure = () => {
-    const main = $('.hero-main', inner);
-    textBottom = main.offsetTop + main.offsetHeight + 18;
-  };
-  const frame = (e) => {
-    const W = stage.clientWidth, H = stage.clientHeight;
-    const [t0, r0, b0, l0, rad0] = mobile.matches ? [Math.max(H * .4, textBottom), 16, 16, 16, 22] : [92, 24, 24, W * .5, 28];
-    const [t, r, b, l, rad] = [lerp(t0, 0, e), lerp(r0, 0, e), lerp(b0, 0, e), lerp(l0, 0, e), lerp(rad0, 0, e)];
-    media.style.clipPath = `inset(${t}px ${r}px ${b}px ${l}px round ${rad}px)`;
-    // Центр видимой карточки — туда же сдвигаем центр кадра в WebGL, чтобы танкер был в карточке, а не за её краем
-    pan = [((l + (W - r)) / 2) / W - .5, ((t + (H - b)) / 2) / H - .5];
-  };
-  measure();
-  frame(0);
-  addEventListener('resize', () => { measure(); frame(clamp01(p / .65)); });
-  document.fonts.ready.then(() => { measure(); frame(clamp01(p / .65)); });
   const words = splitWords($('[data-hero-title]'));
   let p = 0;
 
   if (!reduced) {
-    // Один оркестрованный вход: слова заголовка поднимаются из маски (видны с первого кадра), за ними лид, кнопки, цифры
+    // Один оркестрованный вход: слова заголовка поднимаются из маски (видны с первого кадра), за ними лид и кнопки; кадр мягко наезжает
     gsap.timeline({ delay: .1 })
-      .from('.hero-poster', { scale: 1.1, duration: 2.4, ease: 'expo.out' }, 0)
       .from(words, { yPercent: 45, duration: 1.2, stagger: .06, ease: 'expo.out' }, 0)
-      .from($$('[data-hero-item]'), { y: 22, duration: 1.1, stagger: .08, ease: 'power3.out' }, .25);
-    $$('[data-hero-count]').forEach((el) => {
-      const end = +el.dataset.heroCount;
-      const year = end > 1900 && end < 2100;
-      const n = { v: year ? end - 18 : 0 };
-      gsap.to(n, { v: end, duration: 1.8, delay: .6, ease: 'expo.out', onUpdate: () => { el.textContent = year ? Math.round(n.v) : fmt.format(Math.round(n.v)); } });
-    });
+      .from($$('[data-hero-item]'), { y: 22, duration: 1.1, stagger: .1, ease: 'power3.out' }, .25)
+      .from('.hero-poster', { scale: 1.12, duration: 2.6, ease: 'expo.out' }, 0)
+      .from('.hero-route', { opacity: 0, duration: 1.2, ease: 'power2.out' }, .6);
   }
 
-  // Прокрутка раскрывает карточку с кадром на весь экран; назад — возвращает. Камера тем временем подлетает к танкеру.
+  // Прокрутка: кадр раздвигается до краёв экрана, камера в WebGL подлетает к танкеру.
+  // Текст уходит вместе со страницей (лёгкий параллакс), а не исчезает.
+  const frame = (e) => {
+    const g = mobile.matches ? 16 : Math.min(48, Math.max(16, innerWidth * .04)); // = --gutter
+    const rail = innerWidth >= 1100 ? 96 : 0; // = --rail (фарватер слева)
+    const side = g * (1 - e), left = (g + rail) * (1 - e), rad = (mobile.matches ? 22 : 28) * (1 - e);
+    film.style.clipPath = `inset(0 ${side}px 0 ${left}px round ${rad}px)`;
+  };
   ScrollTrigger.create({
-    trigger: hero, start: 'top top', end: 'bottom bottom',
+    trigger: hero, start: 'top top', end: 'bottom top',
     onUpdate(self) {
       p = self.progress;
       if (reduced) return;
-      const e = clamp01(p / .65);
-      frame(e);
-      // Текст уходит раньше, чем карточка дорастёт до него, — они никогда не перекрываются
-      gsap.set(inner, mobile.matches ? { y: -e * 70, opacity: 1 - clamp01(e / .45) } : { x: -e * 90, opacity: 1 - clamp01(e / .5) });
+      frame(clamp01(p / .45));
+      gsap.set(inner, { y: p * 60 });
     },
   });
 
   if (reduced) return;
   // Живой кадр на WebGL; без WebGL остаётся картинка с медленным наездом (CSS)
-  const startGL = () => initHeroGL($('[data-hero-gl]'), $('[data-hero-img]'), () => p, () => pan).then((ok) => {
-    if (!ok) stage.classList.add('is-static');
+  const startGL = () => initHeroGL($('[data-hero-gl]'), $('[data-hero-img]'), () => p).then((ok) => {
+    if (!ok) hero.classList.add('is-static');
   });
   const idle = window.requestIdleCallback || ((cb) => setTimeout(cb, 1200));
   const later = () => idle(startGL, { timeout: 2500 });
