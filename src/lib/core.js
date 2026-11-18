@@ -417,6 +417,7 @@ export function initMotion() {
     const brand = $('.brand-mark');
     gsap.timeline({ delay: .5 })
       .add(logoIntro(brand), 0)
-      .from('.brand-name, .nav a, .top-cta, .top-phone, .burger', { y: -16, opacity: 0, duration: .8, stagger: .04, ease: 'expo.out' }, .15);
+      // fromTo с явным y: 0 — с from() кнопка «Отправить заявку» оставалась на −16 px (конечное значение бралось уже сдвинутым)
+      .fromTo('.brand-name, .nav a, .top-cta, .top-phone, .burger', { y: -16, opacity: 0 }, { y: 0, opacity: 1, duration: .8, stagger: .04, ease: 'expo.out' }, .15);
   }
 }
